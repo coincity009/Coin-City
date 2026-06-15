@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin City - Earn Money App</title>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body, button, input, select, textarea { font-family: 'Inter', 'Hind Siliguri', sans-serif !important; }
+        body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 4px; }
+        @keyframes soft-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .animate-soft-bounce { animation: soft-bounce 2s infinite ease-in-out; }
+        @keyframes scrollUpInfinite { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+        .animate-scroll-up-infinite { animation: scrollUpInfinite 35s linear infinite; }
+        .animate-scroll-up-infinite:hover { animation-play-state: paused; }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen grid place-items-center overflow-x-hidden p-0 m-0">
+    <div class="w-full max-w-md bg-white h-[100dvh] sm:h-[850px] sm:rounded-3xl sm:shadow-2xl flex flex-col justify-between overflow-hidden relative shadow-lg">
+        <header class="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white px-5 py-3.5 flex justify-between items-center shadow-md flex-shrink-0">
+            <div class="flex items-center space-x-2">
+                <div class="bg-white text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-building-columns text-base"></i>
+                </div>
+                <span class="font-bold text-lg tracking-wide bg-gradient-to-r from-white to-indigo-100 bg-clip-text text-transparent">Coin City</span>
+            </div>
+        </header>
+
+        <main class="flex-grow overflow-y-auto px-4 py-4 pb-6 relative">
+            <section id="authSection" class="space-y-6">
+                <div class="text-center my-4">
+                    <h2 class="text-3xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Coin City</h2>
+                    <p class="text-gray-500 text-xs mt-1">সবচেয়ে বিশ্বস্ত আর্নিং অ্যাপ। কাজ করুন ও পেমেন্ট নিন বিকাশ-নগদে।</p>
+                </div>
+                <div class="flex bg-gray-150 p-1.5 rounded-2xl border border-slate-200">
+                    <button onclick="switchAuthTab('login')" id="loginTabBtn" class="w-1/2 py-2.5 text-sm font-semibold rounded-lg text-indigo-700 bg-white shadow-sm transition-all font-black">লগইন করুন</button>
+                    <button onclick="switchAuthTab('register')" id="registerTabBtn" class="w-1/2 py-2.5 text-sm font-semibold text-gray-500 rounded-lg transition-all font-semibold">রেজিস্ট্রেশন</button>
+                </div>
+                <form id="loginForm" class="space-y-4" onsubmit="handleLogin(event)">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">মোবাইল নাম্বার</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-phone absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                            <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium" placeholder="017XXXXXXXX">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পাসওয়ার্ড</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                            <input type="password" id="loginPassword" required class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="••••••••">
+                            <button type="button" onclick="togglePassword('loginPassword', 'loginEyeIcon')" class="absolute right-3.5 top-3.5 text-gray-400 hover:text-indigo-600 transition">
+                                <i id="loginEyeIcon" class="fa-solid fa-eye-slash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 py-1">
+                        <input type="checkbox" id="loginRememberMe" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer">
+                        <label for="loginRememberMe" class="text-xs font-bold text-gray-600 cursor-pointer select-none">লগইন তথ্য সংরক্ষণ করুন (Remember Me)</label>
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition duration-200 text-sm font-black">লগইন একাউন্ট</button>
+                </form>
+                <form id="registerForm" class="space-y-4 hidden" onsubmit="handleRegister(event)">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পূর্ণ নাম</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                            <input type="text" id="regName" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="আপনার নাম লিখুন">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">মোবাইল নাম্বার (বাংলাদেশী)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-phone absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                            <input type="tel" id="regPhone" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-semibold" placeholder="01XXXXXXXXX">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পাসওয়ার্ড (নূন্যতম 6 ডিজিট)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                            <input type="password" id="regPassword" required minlength="6" class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="••••••••">
+                            <button type="button" onclick="togglePassword('regPassword', 'regEyeIcon')" class="absolute right-3.5 top-3.5 text-gray-400 hover:text-indigo-600 transition">
+                                <i id="regEyeIcon" class="fa-solid fa-eye-slash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পাসওয়ার্ড নিশ্চিত করুন</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                            <input type="password" id="regPasswordConfirm" required minlength="6" class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="••••••••">
+                            <button type="button" onclick="togglePassword('regPasswordConfirm', 'regEyeIconConfirm')" class="absolute right-3.5 top-3.5 text-gray-400 hover:text-indigo-600 transition">
+                                <i id="regEyeIconConfirm" class="fa-solid fa-eye-slash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">রেফারেন্স কোড (ঐচ্ছিক)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-gift absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                            <input type="text" id="regReferral" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono tracking-wider" placeholder="যেমন: REF1234">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition duration-200 text-sm font-black">নতুন একাউন্ট তৈরি করুন</button>
+                </form>
+            </section>
+
+            <section id="homeSection" class="hidden space-y-3">
+                <div class="bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-950 text-white rounded-xl p-4 shadow-lg relative overflow-hidden border border-indigo-500/20">
+                    <div class="absolute -right-4 -bottom-4 opacity-5 transform rotate-12">
+                        <i class="fa-solid fa-wallet text-[100px] text-yellow-400"></i>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <span class="text-[9px] bg-indigo-50/20 text-indigo-300 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Coin City Wallet</span>
+                            <p class="text-[11px] text-indigo-200/80 mt-1 font-medium">বর্তমান ব্যালেন্স পরিমাণ</p>
+                        </div>
+                        <div class="text-right">
+                            <h3 class="text-3xl font-black text-emerald-400 tracking-tight">৳ <span id="dashBDT">--</span></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 border border-slate-150 rounded-lg p-2 overflow-hidden flex items-center space-x-2 shadow-inner w-full">
+                    <span class="bg-indigo-600 text-white text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider flex-shrink-0">নোটিশ</span>
+                    <div id="marqueeContainer" class="flex-grow overflow-hidden"></div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-[10px] font-extrabold text-slate-200 uppercase tracking-widest flex items-center">
+                            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping mr-2"></span>লাইভ উইথড্র ট্র্যাকার
+                        </h4>
+                        <span class="text-[8px] bg-indigo-500/15 text-indigo-300 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">REALTIME LEDGER</span>
+                    </div>
+                    <div class="scroller-container bg-slate-950/60 rounded-xl border border-white/5 p-2 h-[155px] overflow-hidden relative">
+                        <div id="verticalScrollerContent" class="space-y-2 flex flex-col animate-scroll-up-infinite"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="switchTab('tasks')" class="bg-indigo-50/50 hover:bg-indigo-100/80 p-3.5 rounded-xl border border-indigo-100/50 flex items-center justify-between group shadow-sm">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="bg-indigo-600 text-white p-2 rounded-lg w-8 h-8 flex items-center justify-center shadow-md"><i class="fa-solid fa-play text-xs"></i></div>
+                            <span class="font-bold text-indigo-900 text-xs">ডেইলি টাস্ক</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-indigo-400 text-[10px]"></i>
+                    </button>
+                    <button onclick="openReferModal()" class="bg-emerald-50/50 hover:bg-emerald-100/80 p-3.5 rounded-xl border border-emerald-100/50 flex items-center justify-between group shadow-sm">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="bg-emerald-600 text-white p-2 rounded-lg w-8 h-8 flex items-center justify-center shadow-md"><i class="fa-solid fa-user-plus text-xs"></i></div>
+                            <span class="font-bold text-emerald-900 text-xs">রেফার করুন</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-emerald-400 text-[10px]"></i>
+                    </button>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 flex justify-between text-center">
+                    <div class="w-1/2 border-r border-slate-150">
+                        <span class="text-[9px] text-slate-400 uppercase font-bold">আজকের ইনকাম</span>
+                        <span class="text-xs font-black block text-indigo-600 mt-0.5">৳<span id="dashDaily">--</span></span>
+                    </div>
+                    <div class="w-1/2">
+                        <span class="text-[9px] text-slate-400 uppercase font-bold">মোট রেফার সংখ্যা</span>
+                        <span id="dashReferrals" class="text-xs font-black block text-slate-800 mt-0.5">--</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tasksSection" class="hidden space-y-5">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Earning Tasks</h3>
+                        <p class="text-xs text-gray-500">স্পন্সর লিঙ্ক ভিজিট করে সরাসরি টাকা আয় করুন</p>
+                    </div>
+                    <div class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold flex items-center space-x-1 select-none">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span>আজকের ইনকাম: ৳<span id="tasksDailyCap">--</span></span>
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-indigo-100 text-indigo-700 p-3 rounded-xl text-lg flex items-center justify-center">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-slate-800">ডেইলি বোনাস</h4>
+                            <p class="text-xs text-slate-400">প্রতিদিন 1 বার ক্লেইম করুন</p>
+                        </div>
+                    </div>
+                    <button id="dailyCheckInBtn" onclick="claimDailyBonus()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold">Claim ৳10</button>
+                </div>
+                <div id="taskList" class="space-y-3"></div>
+            </section>
+
+            <section id="activateSection" class="hidden space-y-5">
+                <div class="flex items-center mb-1">
+                    <button onclick="switchTab('wallet')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold flex items-center space-x-1">
+                        <i class="fa-solid fa-arrow-left"></i> <span>ওয়ালেটে ফিরে যান</span>
+                    </button>
+                </div>
+                <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white border border-indigo-900 shadow-xl rounded-2xl p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-bold text-xs text-yellow-400 flex items-center uppercase">
+                            <i class="fa-solid fa-shield-heart text-yellow-400 mr-2 text-sm animate-pulse"></i> একাউন্ট অ্যাক্টিভেশন প্রক্রিয়া
+                        </h3>
+                        <span class="text-[9px] bg-red-600 text-white font-black px-2 py-0.5 rounded-full uppercase">আবশ্যক</span>
+                    </div>
+                    <p id="activationNoticeText" class="text-xs text-indigo-200 leading-relaxed mb-4">লোড হচ্ছে...</p>
+                    <div class="bg-black/30 p-1 rounded-xl flex mb-4 border border-indigo-800">
+                        <button type="button" onclick="switchDepMethod('bKash')" id="depTabBkash" class="w-1/2 py-2 text-[10px] font-bold rounded-lg text-white bg-indigo-600 shadow-sm flex items-center justify-center">bKash (বিকাশ)</button>
+                        <button type="button" onclick="switchDepMethod('Nagad')" id="depTabNagad" class="w-1/2 py-2 text-[10px] font-bold text-indigo-300 rounded-lg flex items-center justify-center">Nagad (নগদ)</button>
+                    </div>
+                    <div class="bg-black/20 p-3 rounded-xl border border-indigo-800 mb-4">
+                        <span class="text-[9px] text-indigo-300 block font-bold uppercase">BKASH / NAGAD (PERSONAL) NUMBER:</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span id="activationNumberPlaceholder" class="text-sm font-mono font-bold text-white tracking-widest">01407746853</span>
+                            <button type="button" onclick="copyDepositNumber()" class="bg-indigo-600 hover:bg-indigo-700 text-[9px] px-2.5 py-1 rounded font-bold text-white transition flex items-center"><i class="fa-solid fa-copy mr-1"></i> কপি করুন</button>
+                        </div>
+                    </div>
+                    <form onsubmit="handleActivationRequest(event)" class="space-y-3.5 text-slate-800">
+                        <div>
+                            <label class="block text-[10px] font-bold text-indigo-200 uppercase mb-1">যে নাম্বার থেকে টাকা পাঠিয়েছেন</label>
+                            <input type="tel" id="depSender" required class="w-full px-3 py-2 bg-white border border-indigo-700 rounded-lg text-xs font-semibold focus:outline-none" placeholder="017XXXXXXXX">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-indigo-200 uppercase mb-1">কত টাকা পাঠিয়েছেন</label>
+                            <input type="number" id="depAmount" required min="110" class="w-full px-3 py-2 bg-white border border-indigo-700 rounded-lg text-xs font-bold focus:outline-none" placeholder="সর্বনিম্ন 110 টাকা">
+                        </div>
+                        <button type="submit" id="depSubmitBtn" class="w-full py-2.5 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-slate-950 font-black rounded-xl transition duration-200 text-xs flex justify-center items-center shadow-lg"><i class="fa-solid fa-circle-check mr-1 text-sm"></i> অ্যাক্টিভেশন রিকোয়েস্ট সাবমিট করুন</button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="rulesSection" class="hidden space-y-5">
+                <div class="flex items-center mb-1">
+                    <button onclick="switchTab('profile')" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold flex items-center space-x-1">
+                        <i class="fa-solid fa-arrow-left"></i> <span>প্রোফাইলে ফিরে যান</span>
+                    </button>
+                </div>
+                <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white border border-indigo-900 shadow-xl rounded-2xl p-5 space-y-4">
+                    <h3 class="font-bold text-sm text-yellow-400 flex items-center uppercase">
+                        <i class="fa-solid fa-circle-info text-yellow-400 mr-2 text-sm animate-pulse"></i> Coin City রুলস ও টিপস
+                    </h3>
+                    <div class="bg-rose-500/15 border border-rose-500/30 p-3 rounded-xl flex items-start space-x-2.5">
+                        <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg mt-0.5"></i>
+                        <div>
+                            <span class="text-xs font-bold text-rose-300 block">VPN ব্যবহার নিষিদ্ধ!</span>
+                            <p class="text-[10px] text-rose-200/80 leading-relaxed mt-0.5">অ্যাপটি ব্যবহারের সময় কোনো প্রকার ভিপিএন (VPN) কানেক্ট করবেন না। ভিপিএন ব্যবহার করলে আপনার অ্যাকাউন্টটি সিস্টেম দ্বারা স্বয়ংক্রিয়ভাবে চিরতরে ব্যান করা হতে পারে।</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">টাস্ক সঠিক নিয়মে সম্পন্ন করুন: স্পন্সর লিঙ্কের কাজ করার সময় নির্ধারিত 20 সেকেন্ড কাউন্টডাউন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</p>
+                        </div>
+                        <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">সঠিক পেমেন্ট ইনফরমেশন: পেমেন্ট বা উইথড্র করার সময় আপনার বিকাশ বা নগদ নম্বরটি পুনরায় চেক করে সঠিকভাবে ইনপুট করুন।</p>
+                        </div>
+                        <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">নিয়মিত ডেইলি বোনাস সংগ্রহ: অ্যাপে প্রতিদিন অন্তত একবার প্রবেশ করে ফ্রিতে 10 টাকা ডেইলি বোনাস ক্লেইম করুন।</p>
+                        </div>
+                        <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">রেফার করে বাড়তি ইনকাম: বন্ধুদের সাথে রেফারেল লিংক শেয়ার করে প্রতি সফল রেফারে সরাসরি 20 টাকা বোনাস সংগ্রহ করুন।</p>
+                        </div>
+                        <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">5</span>
+                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">অফিসিয়াল সাপোর্ট চ্যানেল: যেকোনো প্রকার সমস্যা বা পেমেন্ট আপডেটের জন্য আমাদের অফিসিয়াল টেলিগ্রাম গ্রুপে নিয়মিত চোখ রাখুন।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="walletSection" class="hidden space-y-5">
+                <div class="bg-gradient-to-r from-slate-50 to-slate-100/60 border border-slate-200 rounded-2xl p-5 text-center shadow-sm">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">উত্তোলনযোগ্য ব্যালেন্স</p>
+                    <h2 class="text-4xl font-black text-indigo-600 mt-1.5">৳ <span id="walletBDT">--</span></h2>
+                </div>
+                <div class="bg-white border border-slate-150 shadow-sm rounded-2xl p-5">
+                    <h3 class="font-bold text-sm text-slate-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-money-bill-transfer text-indigo-600 mr-2"></i> উইথড্র ফরম সাবমিট করুন
+                    </h3>
+                    <form onsubmit="handleWithdrawal(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পেমেন্ট মেথড</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="border-2 border-indigo-600 bg-indigo-50/50 rounded-xl p-3 flex items-center justify-between cursor-pointer relative" id="bkashLabel">
+                                    <input type="radio" name="paymentMethod" value="bKash" checked class="accent-indigo-600" onchange="stylePaymentMethod('bKash')">
+                                    <span class="font-bold text-xs text-slate-800">bKash (বিকাশ)</span>
+                                    <div class="w-2 h-2 bg-pink-500 rounded-full animate-ping absolute top-2 right-2"></div>
+                                </label>
+                                <label class="border border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer" id="nagadLabel">
+                                    <input type="radio" name="paymentMethod" value="Nagad" class="accent-indigo-600" onchange="stylePaymentMethod('Nagad')">
+                                    <span class="font-bold text-xs text-slate-800">Nagad (নগদ)</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">অ্যাকাউন্ট নাম্বার</label>
+                            <input type="tel" id="withdrawPhone" required pattern="01[3-9]\d{8}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" placeholder="017XXXXXXXX">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">উত্তোলনের পরিমাণ (টাকা)</label>
+                            <div class="relative">
+                                <input type="number" id="withdrawPoints" required min="800" class="w-full pl-4 pr-16 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" placeholder="সর্বনিম্ন 800 টাকা">
+                                <span class="absolute right-3.5 top-3.5 text-xs font-bold text-slate-400">টাকা</span>
+                            </div>
+                            <span id="minWithdrawLabel" class="text-[10px] text-gray-400 mt-1 block">নূন্যতম উইথড্র ৮০০ টাকা।</span>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl transition duration-200 text-sm flex justify-center items-center shadow-md"><i class="fa-solid fa-circle-check mr-2"></i> উইথড্র রিকোয়েস্ট পাঠান</button>
+                    </form>
+                    <div id="walletActivateContainer" class="hidden mt-4 pt-4 border-t border-slate-150 w-full">
+                        <button onclick="switchTab('activate')" class="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-extrabold rounded-xl transition duration-200 text-sm flex justify-center items-center shadow-md">
+                            <i class="fa-solid fa-shield-heart mr-2 text-sm animate-pulse"></i> Account Active
+                        </button>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="font-bold text-sm text-slate-800 flex items-center">
+                        <i class="fa-solid fa-clock-rotate-left text-indigo-600 mr-2"></i> সাম্প্রতিক উইথড্র হিস্ট্রি
+                    </h3>
+                    <div id="userWithdrawalList" class="space-y-2"></div>
+                </div>
+            </section>
+
+            <section id="profileSection" class="hidden space-y-5">
+                <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 border border-indigo-500/10 rounded-3xl p-6 shadow-xl text-center relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl"></div>
+                    <div class="relative inline-block">
+                        <div class="w-20 h-20 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-full p-0.5 shadow-lg shadow-indigo-500/20">
+                            <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+                                <i class="fa-solid fa-user-astronaut text-indigo-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 id="profName" class="font-extrabold text-xl text-white mt-4 tracking-wide">...</h3>
+                    <p id="profPhone" class="text-xs text-indigo-300 font-mono font-bold mt-1 tracking-widest">01*********</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3.5">
+                    <div class="bg-white border border-slate-150 rounded-2xl p-4 text-center shadow-sm">
+                        <span class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider block">উত্তোলনযোগ্য ব্যালেন্স</span>
+                        <h4 id="profTotalEarned" class="text-xl font-black text-indigo-600 mt-1.5">৳--</h4>
+                    </div>
+                    <div class="bg-white border border-slate-150 rounded-2xl p-4 text-center shadow-sm">
+                        <span class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider block">নিরাপত্তা স্ট্যাটাস</span>
+                        <h4 class="text-md font-bold text-emerald-600 mt-2 flex items-center justify-center"><i class="fa-solid fa-shield-halved mr-1.5 animate-pulse text-sm"></i> Secure</h4>
+                    </div>
+                </div>
+                <div class="space-y-2.5">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">প্রয়োজনীয় লিংক ও সেটিংস</h4>
+                    <div class="bg-white border border-slate-150 rounded-2xl p-3.5 space-y-1 shadow-sm">
+                        <button onclick="openLinkSafe(officialTelegramUrl)" id="profOfficialBtn" class="w-full flex justify-between items-center p-3 text-sm text-slate-700 hover:bg-slate-50 rounded-xl transition font-semibold group text-left">
+                            <span class="flex items-center"><i class="fa-brands fa-telegram text-blue-500 text-lg mr-3.5 transition-transform group-hover:scale-110"></i> অফিসিয়াল টেলিগ্রাম চ্যানেল</span>
+                            <span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-blue-100">যুক্ত হোন</span>
+                        </button>
+                        <hr class="border-slate-100">
+                        <button onclick="openLinkSafe(proofTelegramUrl)" id="profProofBtn" class="w-full flex justify-between items-center p-3 text-sm text-slate-700 hover:bg-slate-50 rounded-xl transition font-semibold group text-left">
+                            <span class="flex items-center"><i class="fa-brands fa-telegram text-indigo-500 text-lg mr-3.5 transition-transform group-hover:scale-110"></i> পেমেন্ট প্রুফ চ্যানেল</span>
+                            <span class="bg-indigo-50 text-indigo-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-indigo-100">যুক্ত হোন</span>
+                        </button>
+                        <hr class="border-slate-100">
+                        <button onclick="switchTab('rules')" class="w-full flex justify-between items-center p-3 text-sm text-slate-700 hover:bg-slate-50 rounded-xl transition font-semibold group text-left">
+                            <span class="flex items-center"><i class="fa-solid fa-book-open text-purple-600 text-lg mr-3.5 transition-transform group-hover:scale-110"></i> অ্যাপস রুলস ও নির্দেশিকা</span>
+                            <i class="fa-solid fa-chevron-right text-slate-400 text-xs transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                        <hr class="border-slate-100">
+                        <button onclick="showToast('আমাদের সমস্ত তথ্য সুরক্ষিত রাখা হয়।', 'success')" class="w-full flex justify-between items-center p-3 text-sm text-slate-700 hover:bg-slate-50 rounded-xl transition font-semibold group text-left">
+                            <span class="flex items-center"><i class="fa-solid fa-user-shield text-slate-500 text-lg mr-3.5 transition-transform group-hover:scale-110"></i> অ্যাপস প্রাইভেসি পলিসি</span>
+                            <i class="fa-solid fa-chevron-right text-slate-400 text-xs transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 border border-indigo-500/20 rounded-3xl p-5 text-white shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 opacity-10 transform rotate-12">
+                        <i class="fa-solid fa-gift text-9xl"></i>
+                    </div>
+                    <div class="flex items-center space-x-2 text-yellow-300 font-bold text-xs uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-share-nodes text-sm animate-pulse"></i>
+                        <span>আপনার ইউনিক রেফারেল লিংক</span>
+                    </div>
+                    <p class="text-[11px] text-indigo-100/95 mb-3.5 leading-relaxed">বন্ধুদের ইনভাইট করুন এবং প্রতি রেফারে সরাসরি 20 টাকা বোনাস লাভ করুন!</p>
+                    <div class="flex items-center justify-between bg-black/25 border border-white/10 rounded-2xl p-2">
+                        <span id="profReferLink" class="text-xs font-mono font-semibold text-indigo-200 overflow-x-auto whitespace-nowrap scrollbar-none mr-3 pl-2">https://coin-city-4a831.web.app?ref=...</span>
+                        <button onclick="copyProfileReferLink()" class="bg-yellow-400 hover:bg-yellow-500 text-[11px] px-4 py-2 rounded-xl font-bold text-slate-950 transition flex items-center flex-shrink-0 shadow-md">
+                            <i class="fa-solid fa-copy mr-1.5"></i> কপি
+                        </button>
+                    </div>
+                </div>
+                <div class="pt-1.5">
+                    <button onclick="handleLogout()" class="w-full flex justify-between items-center p-4 text-sm font-bold text-red-600 bg-rose-50 border border-rose-100 hover:bg-rose-100 rounded-2xl transition shadow-sm group">
+                        <span class="flex items-center"><i class="fa-solid fa-arrow-right-from-bracket text-red-500 text-lg mr-3.5 transition-transform group-hover:translate-x-1"></i> লগআউট করুন</span>
+                        <i class="fa-solid fa-chevron-right text-red-400 text-xs transition-transform group-hover:translate-x-1"></i>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <div id="referModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+            <div class="bg-slate-900 text-white rounded-3xl w-full max-sm p-6 text-center space-y-5 border border-indigo-500/20 shadow-2xl">
+                <div class="text-indigo-400 text-5xl"><i class="fa-solid fa-gift animate-pulse"></i></div>
+                <div>
+                    <h4 class="font-bold text-lg text-white">Coin City Refer & Earn</h4>
+                    <p class="text-xs text-slate-300 px-4 mt-1">বন্ধুদের রেফার করে প্রতিটি সফল রেফারে 20 টাকা বোনাস জিতে নিন!</p>
+                </div>
+                <div class="bg-black/30 p-3 rounded-xl border border-indigo-950 flex justify-between items-center">
+                    <span id="myReferralCodeText" class="text-sm font-mono font-bold text-white tracking-widest">REFXXXX</span>
+                    <button onclick="copyProfileReferLink()" class="bg-indigo-600 hover:bg-indigo-700 text-[10px] px-3 py-1.5 rounded-lg font-bold text-white transition flex items-center"><i class="fa-solid fa-copy mr-1"></i> কপি করুন</button>
+                </div>
+                <div class="space-y-2 text-left">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase block tracking-wider">আপনার সফল রেফারালসমূহ:</span>
+                    <div id="myReferralsList" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+                </div>
+                <button onclick="closeReferModal()" class="w-full py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition">উইন্ডো বন্ধ করুন</button>
+            </div>
+        </div>
+
+        <div class="absolute right-4 z-40" style="bottom: 72px;">
+            <button onclick="openHelplineModal()" class="relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 border-2 border-white animate-soft-bounce" title="Helpline Support">
+                <i class="fa-solid fa-headset text-lg"></i>
+                <span class="absolute -top-0.5 -right-0.5 flex h-4 w-4">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-white"></span>
+                </span>
+            </button>
+        </div>
+
+        <div id="helplineModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+            <div class="bg-slate-900 text-white rounded-3xl w-full max-w-sm p-6 text-center space-y-5 border border-indigo-500/20 shadow-2xl">
+                <div class="text-indigo-400 text-5xl"><i class="fa-solid fa-headset animate-pulse"></i></div>
+                <div>
+                    <h4 class="font-bold text-lg text-white">Coin City Help Desk</h4>
+                    <p class="text-xs text-slate-300 px-4 mt-1">যেকোনো সমস্যার জন্য সরাসরি যোগাযোগ করুন।</p>
+                </div>
+                <div class="space-y-2 text-sm text-left">
+                    <button id="modalHelpBtn" class="w-full flex items-center justify-between p-3.5 bg-indigo-950 hover:bg-indigo-900 border border-indigo-850 rounded-xl transition duration-200 font-bold text-left">
+                        <span class="flex items-center"><i class="fa-brands fa-telegram text-blue-400 text-lg mr-2.5"></i> Help Center</span>
+                        <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
+                    </button>
+                    <button id="modalOfficialBtn" class="w-full flex items-center justify-between p-3.5 bg-indigo-950 hover:bg-indigo-900 border border-indigo-800 rounded-xl transition duration-200 font-bold text-left">
+                        <span class="flex items-center"><i class="fa-brands fa-telegram text-blue-400 text-lg mr-2.5"></i> Official Channel</span>
+                        <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
+                    </button>
+                    <button id="modalProofBtn" class="w-full flex items-center justify-between p-3.5 bg-indigo-950 hover:bg-indigo-900 border border-indigo-800 rounded-xl transition duration-200 font-bold text-left">
+                        <span class="flex items-center"><i class="fa-brands fa-telegram text-blue-400 text-lg mr-2.5"></i> Payment Proof</span>
+                        <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
+                    </button>
+                </div>
+                <button onclick="closeHelplineModal()" class="w-full py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition font-bold">উইন্ডো বন্ধ করুন</button>
+            </div>
+        </div>
+
+        <div id="adModal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4 transition-all duration-300">
+            <div class="bg-[#111827] text-white rounded-3xl w-full max-w-md p-5 flex flex-col justify-between relative border border-slate-800 shadow-2xl space-y-4">
+                <div class="flex justify-between items-center pb-2.5 border-b border-slate-800">
+                    <h4 class="font-extrabold text-base text-slate-100 tracking-wide" id="adModalTitle">ভিডিও প্রেজেন্টেশন</h4>
+                    <div class="flex items-center space-x-1.5 bg-slate-950 border border-indigo-500/30 px-3 py-1.5 rounded-xl shadow-inner">
+                        <span id="adCountdown" class="text-xs font-mono font-black text-indigo-300">20s</span>
+                        <i class="fa-solid fa-stopwatch text-indigo-400 text-xs"></i>
+                    </div>
+                </div>
+                <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-lg">
+                    <div id="adVideoContainer" class="w-full h-full"></div>
+                </div>
+                <div class="bg-indigo-950/30 border border-indigo-900/40 rounded-xl p-3.5">
+                    <p class="text-xs text-indigo-200/90 leading-relaxed font-medium flex items-start">
+                        <i class="fa-solid fa-circle-info text-amber-400 mr-2 mt-0.5 text-sm flex-shrink-0"></i>
+                        <span>সম্পূর্ণ ভিডিওটি মনোযোগ দিয়ে দেখুন। কাউন্টডাউন শেষ হওয়া পর্যন্ত এই পেজে অপেক্ষা করুন এবং এরপর ক্লেইম বাটনে চাপুন।</span>
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-center items-center space-x-1.5 text-slate-500 text-[10px]">
+                        <i class="fa-solid fa-shield-halved text-emerald-500"></i>
+                        <span>Secure Verification System</span>
+                    </div>
+                    <button id="adCloseBtn" disabled onclick="closeAdModal()" class="w-full py-3.5 bg-slate-800 text-slate-500 border border-slate-700/50 font-extrabold rounded-xl text-sm transition-all duration-300 shadow-inner">দয়া করে সম্পূর্ণ ভিডিওটি শেষ করুন...</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-slate-950/95 text-white px-5 py-4 rounded-2xl shadow-2xl text-xs font-semibold flex flex-col items-center space-y-2 border border-slate-800 transition-opacity duration-300 text-center w-64 max-w-xs">
+            <i id="toastIcon" class="fa-solid fa-circle-check text-indigo-500 text-2xl animate-bounce"></i>
+            <span id="toastMessage">Action completed</span>
+        </div>
+
+        <nav id="bottomNav" class="hidden bg-white border-t border-slate-150 h-14 flex justify-around items-center z-50 px-2 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] flex-shrink-0 w-full">
+            <button onclick="switchTab('home')" id="tabBtnHome" class="flex flex-col items-center justify-center space-y-1 text-indigo-600 w-14 h-full">
+                <i class="fa-solid fa-house-chimney text-base"></i>
+                <span class="text-[9px] font-bold">Home</span>
+            </button>
+            <button onclick="switchTab('tasks')" id="tabBtnTasks" class="flex flex-col items-center justify-center space-y-1 text-gray-400 w-14 h-full">
+                <i class="fa-solid fa-circle-play text-base"></i>
+                <span class="text-[9px] font-bold">Tasks</span>
+            </button>
+            <button onclick="switchTab('wallet')" id="tabBtnWallet" class="flex flex-col items-center justify-center space-y-1 text-gray-400 w-14 h-full">
+                <i class="fa-solid fa-wallet text-base"></i>
+                <span class="text-[9px] font-bold">Wallet</span>
+            </button>
+            <button onclick="switchTab('profile')" id="tabBtnProfile" class="flex flex-col items-center justify-center space-y-1 text-gray-400 w-14 h-full">
+                <i class="fa-solid fa-user-astronaut text-base"></i>
+                <span class="text-[9px] font-bold">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, update, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAL8nsXSLwLHP66JDd5evoR6tVR_WTjF04",
+          authDomain: "coin-city-4a831.firebaseapp.com",
+          databaseURL: "https://coin-city-4a831-default-rtdb.firebaseio.com",
+          projectId: "coin-city-4a831",
+          storageBucket: "coin-city-4a831.firebasestorage.app",
+          messagingSenderId: "734974599107",
+          appId: "1:734974599107:web:80ae39ad3fa41760fba776"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const REF_REWARD = 20.00; 
+        let HELPLINE_RECEIVER_NUMBER = "01407746853";
+
+        let users = {}, currentUser = null, withdrawals = {}, activations = {}, tasks = [], currentDepositMethodSelected = 'bKash', minWithdrawAmount = 800;
+        let officialTelegramUrl = "https://t.me/coincity_official";
+        let proofTelegramUrl = "https://t.me/coincity_proofs";
+        let helpCenterTelegramUrl = "https://t.me/coincity_support";
+        let task1TelegramUrl = "https://t.me/coincity_official";
+        let task2TelegramUrl = "https://t.me/coincity_proofs";
+
+        const defaultNotice = "স্বাগতম Coin City অ্যাপে! এটি বাংলাদেশের সবচেয়ে বিশ্বস্ত আর্নিং প্ল্যাটফর্ম। প্রতিদিন স্পন্সর লিংক ভিজিট এবং রেফার করে টাকা ইনকাম করুন।";
+        const defaultTasks = [
+            { id: "task_t1", title: "টেলিগ্রাম জয়েন করুন (টাস্ক 1)", reward: 7.00, type: "link", url: "https://t.me/coincity_official", time: 20 },
+            { id: "task_t2", title: "টেলিগ্রাম জয়েন করুন (টাস্ক 2)", reward: 7.00, type: "link", url: "https://t.me/coincity_proofs", time: 20 },
+            { id: "task_t3", title: "3 জন বন্ধুকে রেফার ও কোড ব্যবহার", reward: 150.00, type: "refer", url: "https://t.me/coincity_official", time: 20 },
+            { id: "task_t4", title: "5 জন বন্ধুকে রেফার ও কোড ব্যবহার", reward: 200.00, type: "refer5", url: "https://t.me/coincity_official", time: 20 }
+        ];
+        
+        for (let i = 1; i <= 46; i++) {
+            defaultTasks.push({ id: `task_s${i}`, title: `Sponsor Link Task ${i}`, reward: 7.00, type: "link", url: "https://www.youtube.com/watch?v=EngW7tLk6R8", time: 20 });
+        }
+
+        const paymentMethods = ["bKash", "Nagad"], prefixes = ["017", "018", "019", "015", "016", "013", "014"], statuses = ["Paid", "Paid", "Paid", "Paid", "Processing", "Paid", "Paid"];
+        
+        function makeRealisticPaymentData() {
+            const list = [];
+            for (let i = 0; i < 20; i++) {
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const nextDigit = Math.floor(Math.random() * 10);
+                const endDigits = Math.floor(1000 + Math.random() * 9000);
+                const number = `${prefix}${nextDigit}***${endDigits}`; 
+                const amount = Math.floor(800 + Math.random() * 801); 
+                const method = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                list.push({ number, amount, method, status });
+            }
+            return list;
+        }
+
+        function safeSetText(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = text;
+        }
+
+        function getTelegramDeepLink(url) {
+            if (!url) return 'https://t.me/coincity_official';
+            let formattedUrl = url.trim();
+            if (formattedUrl.startsWith('@')) { return 'https://t.me/' + formattedUrl.substring(1); }
+            if (!formattedUrl.includes('/') && !formattedUrl.includes('.')) { return 'https://t.me/' + formattedUrl; }
+            if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) { formattedUrl = 'https://' + formattedUrl; }
+            return formattedUrl;
+        }
+
+        function openLinkSafe(url) {
+            const targetUrl = getTelegramDeepLink(url);
+            try {
+                const win = window.open(targetUrl, '_blank');
+                if (!win || win.closed || typeof win.closed == 'undefined') { window.location.href = targetUrl; }
+            } catch (e) { window.location.href = targetUrl; }
+        }
+
+        function getEmbedUrl(url) {
+            if (!url) return '';
+            let videoId = '';
+            try {
+                if (url.includes('youtube.com/embed/')) {
+                    const cleanUrl = url.split('?')[0];
+                    const lastPart = cleanUrl.substring(cleanUrl.lastIndexOf('/') + 1);
+                    videoId = lastPart.split('?')[0];
+                } else if (url.includes('youtube.com/watch')) {
+                    const urlObj = new URL(url);
+                    videoId = urlObj.searchParams.get('v');
+                } else if (url.includes('youtu.be/')) {
+                    const parts = url.split('youtu.be/');
+                    videoId = parts[1]?.split('?')[0]?.split('/')[0];
+                } else if (url.includes('youtube.com/shorts/')) {
+                    const parts = url.split('youtube.com/shorts/');
+                    videoId = parts[1]?.split('?')[0]?.split('/')[0];
+                } else if (url.includes('m.youtube.com/watch')) {
+                    const urlObj = new URL(url);
+                    videoId = urlObj.searchParams.get('v');
+                }
+            } catch(e) {}
+            
+            if (videoId) {
+                return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1&controls=1&rel=0`;
+            }
+            if (url.includes('youtube.com/') || url.includes('youtu.be/') || url.includes('youtube-nocookie.com/')) {
+                let clean = url.replace('youtube.com', 'youtube-nocookie.com');
+                if (!clean.includes('autoplay=1')) {
+                    clean += (clean.includes('?') ? '&' : '?') + 'autoplay=1&mute=0&playsinline=1';
+                }
+                return clean;
+            }
+            return url;
+        }
+
+        function generateLiveScrollerData() {
+            const scroller = document.getElementById('verticalScrollerContent');
+            if (!scroller) return;
+            const fullDataList = [...makeRealisticPaymentData(), ...makeRealisticPaymentData()];
+            let html = '';
+            fullDataList.forEach((p) => {
+                const isBkash = p.method === 'bKash';
+                const methodBadge = isBkash ? `<span class="bg-pink-500/10 text-pink-400 border border-pink-500/20 px-1.5 py-0.5 rounded text-[9px] font-bold">bKash</span>` : `<span class="bg-orange-500/10 text-orange-400 border border-orange-500/20 px-1.5 py-0.5 rounded text-[9px] font-bold">Nagad</span>`;
+                const isPaid = p.status === 'Paid';
+                const statusBadge = isPaid ? `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] px-2 py-0.5 rounded-full font-bold">Paid</span>` : `<span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[9px] px-2 py-0.5 rounded-full font-bold">Processing</span>`;
+                html += `<div class="bg-slate-900/80 border border-slate-800/60 p-2.5 rounded-xl flex justify-between items-center"><span class="font-mono text-slate-200 text-xs font-bold">${p.number}</span><div class="flex items-center space-x-2">${methodBadge}<span class="font-extrabold text-xs text-white">৳${p.amount}</span>${statusBadge}</div></div>`;
+            });
+            scroller.innerHTML = html;
+        }
+
+        function checkDailyReset() {
+            if (!currentUser) return;
+            const today = getTodayDateString();
+            if (currentUser.lastEarnedDate !== today) {
+                const updates = {};
+                updates[`/users/${currentUser.phone}/completedTasksToday`] = "";
+                updates[`/users/${currentUser.phone}/dailyEarned`] = 0.00;
+                updates[`/users/${currentUser.phone}/lastEarnedDate`] = today;
+                update(ref(db), updates).then(() => {
+                    currentUser.completedTasksToday = [];
+                    currentUser.dailyEarned = 0.00;
+                    currentUser.lastEarnedDate = today;
+                    updateUIStates();
+                });
+            }
+        }
+
+        function getCompletedTasks() {
+            if (!currentUser) return [];
+            const ct = currentUser.completedTasksToday;
+            if (!ct) return [];
+            if (Array.isArray(ct)) return ct;
+            if (typeof ct === 'object') return Object.values(ct);
+            return [];
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            generateLiveScrollerData();
+            forceRefreshMarqueeText(); 
+            initializeDatabaseSync();
+            history.replaceState({ tab: 'auth' }, '');
+            const savedPhone = localStorage.getItem('cc_saved_phone'), savedPass = localStorage.getItem('cc_saved_pass');
+            if (savedPhone && savedPass) {
+                document.getElementById('loginUsername').value = savedPhone;
+                document.getElementById('loginPassword').value = savedPass;
+                document.getElementById('loginRememberMe').checked = true;
+            }
+            setInterval(() => { if (currentUser) checkDailyReset(); }, 10000);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            if (refCode) {
+                const referralInput = document.getElementById('regReferral');
+                if (referralInput) {
+                    referralInput.value = refCode.trim().toUpperCase();
+                    
+                    // সেশন চেক করে নতুন ইউজার হলে ডাইরেক্ট রেজিস্ট্রেশন ট্যাবে পাঠিয়ে দেওয়া হবে
+                    const cachedSession = localStorage.getItem('cc_current_user_phone');
+                    if (!cachedSession) {
+                        switchAuthTab('register');
+                        showToast("রেফারেল লিংক সচল হয়েছে!", "success");
+                    }
+                }
+            }
+        });
+
+        let userListenerUnsubscribe = null;
+        function attachUserListener(phone) {
+            if (userListenerUnsubscribe) userListenerUnsubscribe();
+            update(ref(db, `users/${phone}`), { lastActiveTime: Date.now() });
+            userListenerUnsubscribe = onValue(ref(db, `users/${phone}`), (snapshot) => {
+                const latestUser = snapshot.val();
+                if (latestUser) {
+                    if (latestUser.isBanned) {
+                        handleLogout();
+                        showToast("আপনার অ্যাকাউন্টটি ব্লক করা হয়েছে।", "error");
+                        return;
+                    }
+                    currentUser = latestUser;
+                    updateUIStates();
+                } else {
+                    handleLogout();
+                }
+            });
+        }
+
+        let cachedNoticeText = defaultNotice;
+        function forceRefreshMarqueeText() {
+            const container = document.getElementById('marqueeContainer');
+            if (container) {
+                container.innerHTML = '';
+                container.innerHTML = `<marquee id="noticeMarquee" class="text-[11px] text-slate-700 font-bold flex-grow" scrollamount="4" behavior="scroll" direction="left">${cachedNoticeText}</marquee>`;
+            }
+        }
+
+        function initializeDatabaseSync() {
+            onValue(ref(db, 'notice'), (snap) => {
+                const newNotice = snap.val() || defaultNotice;
+                if (newNotice !== cachedNoticeText) {
+                    cachedNoticeText = newNotice;
+                    forceRefreshMarqueeText();
+                }
+            });
+            onValue(ref(db, 'tasks'), (snap) => {
+                const data = snap.val();
+                tasks = (data && (Array.isArray(data) ? data : Object.values(data)).filter(t => t?.id)) || defaultTasks;
+                renderTasksList();
+            });
+            const cachedSession = localStorage.getItem('cc_current_user_phone');
+            if (cachedSession) { enterApp(); attachUserListener(cachedSession); } else { showAuthScreen(); }
+            onValue(ref(db, 'withdrawals'), (snap) => { withdrawals = snap.val() || {}; renderUserWithdrawalRequests(); });
+            onValue(ref(db, 'activations'), (snap) => { activations = snap.val() || {}; });
+            
+            onValue(ref(db, 'settings'), (snap) => {
+                const settings = snap.val() || {};
+                minWithdrawAmount = parseInt(settings.minWithdraw) || 800;
+                
+                const ptInput = document.getElementById('withdrawPoints');
+                if (ptInput) { ptInput.min = minWithdrawAmount; ptInput.placeholder = `সর্বনিম্ন ${minWithdrawAmount} টাকা`; }
+                
+                const minLbl = document.getElementById('minWithdrawLabel');
+                if (minLbl) minLbl.innerText = `নূন্যতম উইথড্র ${minWithdrawAmount} টাকা।`;
+
+                HELPLINE_RECEIVER_NUMBER = settings.activationNumber || '01407746853';
+                const payNum = document.getElementById('activationNumberPlaceholder');
+                if (payNum) payNum.innerText = HELPLINE_RECEIVER_NUMBER;
+
+                const dbNotice = settings.activationNotice || "আপনার অ্যাকাউন্টটি সক্রিয় করতে এবং উইথড্র (Withdraw) করার সক্ষমতা সচল করতে হলে সার্ভিস চার্জ এবং একাউন্ট অ্যাক্টিভেশন বাবদ 110 টাকা পরিশোধ করতে হবে। অ্যাকাউন্টটি অ্যাক্টিভ হয়ে যাওয়ার সাথে সাথে আপনি আপনার সম্পূর্ণ ব্যালেন্স কোনো ঝামেলা ছাড়াই সরাসরি উইথড্র করে নিতে পারবেন। নিচে দেওয়া বিকাশ বা নগদ নাম্বারে সেন্ড মানি করুন।";
+                const noticeEl = document.getElementById('activationNoticeText');
+                if (noticeEl) noticeEl.innerText = dbNotice;
+
+                officialTelegramUrl = getTelegramDeepLink(settings.officialTelegram || 'https://t.me/coincity_official');
+                proofTelegramUrl = getTelegramDeepLink(settings.proofTelegram || 'https://t.me/coincity_proofs');
+                helpCenterTelegramUrl = getTelegramDeepLink(settings.helpCenterTelegram || 'https://t.me/coincity_support');
+                task1TelegramUrl = getTelegramDeepLink(settings.task1Telegram || 'https://t.me/coincity_official');
+                task2TelegramUrl = getTelegramDeepLink(settings.task2Telegram || 'https://t.me/coincity_proofs');
+
+                const modalHelpBtn = document.getElementById('modalHelpBtn');
+                if (modalHelpBtn) modalHelpBtn.setAttribute('onclick', `openLinkSafe('${helpCenterTelegramUrl}')`);
+                
+                const modalOfficialBtn = document.getElementById('modalOfficialBtn');
+                if (modalOfficialBtn) modalOfficialBtn.setAttribute('onclick', `openLinkSafe('${officialTelegramUrl}')`);
+
+                const modalProofBtn = document.getElementById('modalProofBtn');
+                if (modalProofBtn) modalProofBtn.setAttribute('onclick', `openLinkSafe('${proofTelegramUrl}')`);
+
+                const profOfficialBtn = document.getElementById('profOfficialBtn');
+                if (profOfficialBtn) profOfficialBtn.setAttribute('onclick', `openLinkSafe('${officialTelegramUrl}')`);
+
+                const profProofBtn = document.getElementById('profProofBtn');
+                if (profProofBtn) profProofBtn.setAttribute('onclick', `openLinkSafe('${proofTelegramUrl}')`);
+                
+                updateUIStates();
+            });
+        }
+
+        function switchTab(tabId, pushState = true) {
+            ['home', 'tasks', 'activate', 'rules', 'wallet', 'profile'].forEach(t => {
+                document.getElementById(t + 'Section')?.classList.add('hidden');
+                document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1))?.classList.replace('text-indigo-600', 'text-gray-400');
+            });
+            document.getElementById(tabId + 'Section')?.classList.remove('hidden');
+            document.getElementById('tabBtn' + tabId.charAt(0).toUpperCase() + tabId.slice(1))?.classList.replace('text-gray-400', 'text-indigo-600');
+            
+            if (tabId === 'home') {
+                forceRefreshMarqueeText();
+            }
+
+            if (pushState) { history.pushState({ tab: tabId }, '', ''); }
+            updateUIStates();
+        }
+
+        function closeAllActiveModals() {
+            let hasClosed = false;
+            ['referModal', 'helplineModal', 'adModal'].forEach(id => {
+                const m = document.getElementById(id);
+                if (m && !m.classList.contains('hidden')) { m.classList.add('hidden'); hasClosed = true; }
+            });
+            return hasClosed;
+        }
+
+        window.onpopstate = (event) => {
+            if (closeAllActiveModals()) {
+                const currentTab = event.state?.tab || 'home';
+                history.pushState({ tab: currentTab }, '', '');
+                return;
+            }
+            const isLoggedIn = !!localStorage.getItem('cc_current_user_phone');
+            if (isLoggedIn) {
+                if (event.state && event.state.tab && event.state.tab !== 'auth') {
+                    switchTab(event.state.tab, false);
+                } else {
+                    switchTab('home', false);
+                    history.pushState({ tab: 'home' }, '', '');
+                }
+            } else {
+                showAuthScreen();
+                history.pushState({ tab: 'auth' }, '', '');
+            }
+        };
+
+        function updateUIStates() {
+            if (!currentUser) return;
+            safeSetText('dashBDT', currentUser.balance.toFixed(0));
+            safeSetText('dashDaily', currentUser.dailyEarned.toFixed(0));
+            safeSetText('dashReferrals', (currentUser.referrals || 0) + " Users");
+
+            safeSetText('profName', currentUser.name);
+            safeSetText('profPhone', currentUser.phone);
+            safeSetText('profTotalEarned', "৳" + currentUser.balance.toFixed(0));
+            safeSetText('tasksDailyCap', currentUser.dailyEarned.toFixed(0));
+            safeSetText('walletBDT', currentUser.balance.toFixed(0));
+
+            const lnk = getReferralLink();
+            const prLnk = document.getElementById('profReferLink');
+            if (prLnk) prLnk.innerText = lnk;
+
+            const actContainer = document.getElementById('walletActivateContainer');
+            if (actContainer) {
+                if (!currentUser.isActivated && currentUser.balance >= 800) {
+                    actContainer.classList.remove('hidden');
+                } else {
+                    actContainer.classList.add('hidden');
+                }
+            }
+
+            const dailyKey = `cc_dailycheck_${currentUser.phone}`;
+            const dailyBtn = document.getElementById('dailyCheckInBtn');
+            if (dailyBtn) {
+                if (localStorage.getItem(dailyKey) === getTodayDateString()) {
+                    dailyBtn.innerText = "Claimed";
+                    dailyBtn.disabled = true;
+                    dailyBtn.className = "bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl pointer-events-none";
+                } else {
+                    dailyBtn.innerText = "Claim ৳10";
+                    dailyBtn.disabled = false;
+                    dailyBtn.className = "bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold";
+                }
+            }
+
+            renderTasksList();
+            renderUserWithdrawalRequests();
+        }
+
+        function renderTasksList() {
+            const container = document.getElementById('taskList');
+            if (!container) return;
+            container.innerHTML = '';
+            const completed = getCompletedTasks();
+            tasks.forEach((t, i) => {
+                const isDone = completed.includes(t.id);
+                const wrapper = document.createElement('div');
+                if (isDone) {
+                    wrapper.className = "bg-slate-100 border border-slate-200 rounded-2xl p-4 flex items-center justify-between opacity-60 pointer-events-none select-none";
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">${t.title}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
+                } else {
+                    const isReferTask = t.id === 'task_t3' || t.id === 'task_t4' || t.type === 'refer' || t.type === 'refer5' || t.title?.includes('রেফার');
+                    wrapper.className = "bg-white border border-slate-100 rounded-2xl p-4 flex items-center justify-between shadow-sm";
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#${i+1}</span><i class="${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">${t.title}</h4><p class="text-xs text-slate-400">সময়: ${t.time}s • রিওয়ার্ড: ৳${parseFloat(t.reward).toFixed(0)}</p></div></div><button onclick="startTask('${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold">+৳${parseFloat(t.reward).toFixed(0)}</button>`;
+                }
+                container.appendChild(wrapper);
+            });
+        }
+
+        function startTask(taskId) {
+            if (!currentUser) return showToast("ডাটা লোড হচ্ছে...", "error");
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            checkDailyReset();
+            const completed = getCompletedTasks();
+            if (completed.includes(taskId)) return showToast("ইতিমধ্যে সম্পন্ন করা হয়েছে!", "error");
+
+            if (task.id === "task_t1") {
+                openLinkSafe(task1TelegramUrl);
+                completed.push(task.id);
+                update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => showToast(`+৳${parseFloat(task.reward).toFixed(0)} যুক্ত হয়েছে!`, "success"));
+                return;
+            }
+
+            if (task.id === "task_t2") {
+                openLinkSafe(task2TelegramUrl);
+                completed.push(task.id);
+                update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => showToast(`+৳${parseFloat(task.reward).toFixed(0)} যুক্ত হয়েছে!`, "success"));
+                return;
+            }
+
+            if (task.id === "task_t3" || task.type === "refer" || task.title?.includes("3 জন")) {
+                if ((currentUser.referrals || 0) < 3) return showToast("কমপক্ষে 3 জন রেফার প্রয়োজন!", "error");
+                completed.push(task.id);
+                update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => showToast(`+৳${parseFloat(task.reward).toFixed(0)} যুক্ত হয়েছে!`, "success"));
+                return;
+            }
+
+            if (task.id === "task_t4" || task.type === "refer5" || task.title?.includes("5 জন")) {
+                if ((currentUser.referrals || 0) < 5) return showToast("কমপক্ষে 5 জন রেফার প্রয়োজন!", "error");
+                completed.push(task.id);
+                update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => showToast(`+৳${parseFloat(task.reward).toFixed(0)} যুক্ত হয়েছে!`, "success"));
+                return;
+            }
+
+            const modal = document.getElementById('adModal'), countdownEl = document.getElementById('adCountdown'), closeBtn = document.getElementById('adCloseBtn'), titleEl = document.getElementById('adModalTitle'), videoContainer = document.getElementById('adVideoContainer');
+            if (!modal) return;
+            titleEl.innerText = task.title;
+            modal.classList.remove('hidden');
+            closeBtn.disabled = true;
+            
+            closeBtn.className = "w-full py-3.5 bg-slate-800 text-slate-500 border border-slate-750 font-extrabold rounded-xl text-sm pointer-events-none shadow-inner";
+            closeBtn.innerText = "দয়া করে সম্পূর্ণ ভিডিওটি শেষ করুন...";
+
+            const isYouTube = task.url && (task.url.includes('youtube.com') || task.url.includes('youtu.be') || task.url.includes('youtube-nocookie.com'));
+            
+            if (videoContainer) {
+                if (task.url && isYouTube) {
+                    videoContainer.classList.remove('hidden');
+                    videoContainer.innerHTML = `<iframe src="${getEmbedUrl(task.url)}" class="w-full h-full border-0 rounded-2xl" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+                } else {
+                    videoContainer.classList.remove('hidden');
+                    videoContainer.innerHTML = `<div class="w-full h-full flex flex-col items-center justify-center p-4 bg-indigo-950/40 text-center"><i class="fa-solid fa-earth-americas text-indigo-400 text-4xl mb-3 animate-pulse"></i><span class="text-xs text-slate-300 font-semibold leading-normal">স্পন্সর সাইট লোড করা হয়েছে। কাউন্টডাউন পর্যন্ত এই পেজেই অপেক্ষা করুন।</span></div>`;
+                    if (task.url) { window.open(task.url, '_blank'); }
+                }
+            }
+
+            let rem = 20;
+            countdownEl.innerText = rem + "s";
+            if (window.activeTaskTimer) clearInterval(window.activeTaskTimer);
+            window.activeTaskTimer = setInterval(() => {
+                rem--;
+                countdownEl.innerText = rem + "s";
+                if (rem <= 0) {
+                    clearInterval(window.activeTaskTimer);
+                    countdownEl.innerText = "Done";
+                    closeBtn.disabled = false;
+                    closeBtn.className = "w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold rounded-xl text-sm shadow-lg shadow-emerald-500/20 active:scale-95 transition-all duration-100 cursor-pointer border border-emerald-400/25";
+                    closeBtn.innerText = `Claim ৳${parseFloat(task.reward).toFixed(0)}`;
+                    closeBtn.onclick = () => finishTaskAndReward(task);
+                }
+            }, 1000);
+        }
+
+        function finishTaskAndReward(task) {
+            closeAdModal();
+            checkDailyReset();
+            const completed = getCompletedTasks();
+            completed.push(task.id);
+            update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => {
+                showToast("ব্যালেন্স সফলভাবে আপডেট হয়েছে।", "success");
+            });
+        }
+
+        function closeAdModal() {
+            document.getElementById('adModal')?.classList.add('hidden');
+            const vCon = document.getElementById('adVideoContainer');
+            if (vCon) { vCon.innerHTML = ''; vCon.classList.add('hidden'); }
+        }
+
+        function claimDailyBonus() {
+            const today = getTodayDateString();
+            checkDailyReset();
+            const key = `cc_dailycheck_${currentUser.phone}`;
+            if (localStorage.getItem(key) === today) return showToast("আজকের বোনাস নেওয়া হয়েছে!", "error");
+            update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + 10.00, dailyEarned: currentUser.dailyEarned + 10.00 }).then(() => {
+                localStorage.setItem(key, today);
+                showToast("ডেইলি বোনাস সফল! +10 টাকা", "success");
+                updateUIStates();
+            });
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const n = document.getElementById('regName').value.trim();
+            const ph = document.getElementById('regPhone').value.trim();
+            const p = document.getElementById('regPassword').value;
+            const pc = document.getElementById('regPasswordConfirm').value;
+            const r = document.getElementById('regReferral').value.trim().toUpperCase();
+
+            if (p !== pc) return showToast("পাসওয়ার্ড মিলছে না!", "error");
+
+            get(ref(db, `users/${ph}`)).then((snapshot) => {
+                if (snapshot.exists()) return showToast("ইতিমধ্যে নিবন্ধিত নাম্বার!", "error");
+                const code = "REF" + Math.floor(1000 + Math.random() * 9500);
+                const newUser = { name: n, phone: ph, password: p, balance: 50.00, referrals: 0, referralCode: code, dailyEarned: 0.00, lastEarnedDate: getTodayDateString(), referredBy: r || null, isActivated: false, isBanned: false, completedTasksToday: [] };
+
+                const updates = {};
+                if (r) {
+                    get(ref(db, 'users')).then((snap) => {
+                        const all = snap.val() || {}, k = Object.keys(all).find(x => all[x].referralCode === r);
+                        if (k) {
+                            updates[`/users/${k}/balance`] = parseFloat(all[k].balance || 0) + REF_REWARD;
+                            updates[`/users/${k}/referrals`] = parseInt(all[k].referrals || 0) + 1;
+                            newUser.balance += 10.00;
+                            showToast("রেফার সফল! +10 টাকা বোনাস", "success");
+                        } else {
+                            showToast("ভুল রেফারেল কোড।", "error");
+                        }
+                        updates[`/users/${ph}`] = newUser;
+                        update(ref(db), updates).then(() => {
+                            localStorage.setItem('cc_current_user_phone', ph);
+                            currentUser = newUser;
+                            enterApp();
+                            attachUserListener(ph);
+                            history.replaceState({ tab: 'home' }, '', '');
+                        });
+                    });
+                } else {
+                    updates[`/users/${ph}`] = newUser;
+                    update(ref(db), updates).then(() => {
+                        localStorage.setItem('cc_current_user_phone', ph);
+                        currentUser = newUser;
+                        enterApp();
+                        attachUserListener(ph);
+                        history.replaceState({ tab: 'home' }, '', '');
+                    });
+                }
+            });
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const ph = document.getElementById('loginUsername').value.trim(), p = document.getElementById('loginPassword').value;
+            get(ref(db, `users/${ph}`)).then((snap) => {
+                const user = snap.val();
+                if (user && user.password === p) {
+                    if (user.isBanned) return showToast("অ্যাকাউন্ট ব্লকড!", "error");
+                    const rem = document.getElementById('loginRememberMe')?.checked;
+                    if (rem) {
+                        localStorage.setItem('cc_saved_phone', ph);
+                        localStorage.setItem('cc_saved_pass', p);
+                    } else {
+                        localStorage.removeItem('cc_saved_phone');
+                        localStorage.removeItem('cc_saved_pass');
+                    }
+                    currentUser = user;
+                    localStorage.setItem('cc_current_user_phone', ph);
+                    showToast("স্বাগতম, " + user.name, "success");
+                    enterApp();
+                    attachUserListener(ph);
+                    history.replaceState({ tab: 'home' }, '', '');
+                } else {
+                    showToast("মোবাইল বা পাসওয়ার্ড ভুল!", "error");
+                }
+            });
+        }
+
+        function handleLogout() {
+            if (window.userHeartbeatInterval) clearInterval(window.userHeartbeatInterval);
+            localStorage.removeItem('cc_current_user_phone');
+            currentUser = null;
+            showAuthSection();
+            history.replaceState({ tab: 'auth' }, '', '');
+            history.pushState({ tab: 'auth' }, '', '');
+        }
+
+        function handleActivationRequest(e) {
+            e.preventDefault();
+            const s = document.getElementById('depSender').value.trim(), a = parseFloat(document.getElementById('depAmount').value.trim());
+            if (!s || isNaN(a) || a < 110) return showToast("সর্বনিম্ন 110 টাকা ডিপোজিট লাগবে।", "error");
+
+            const duplicate = Object.values(activations).find(x => x.userPhone === currentUser.phone && x.status === 'Pending');
+            if (duplicate) return showToast("আপনার পূর্ববর্তী রিকোয়েস্ট পেন্ডিং আছে।", "error");
+
+            const id = "D" + Math.floor(1000 + Math.random() * 9000);
+            const dep = { id, userPhone: currentUser.phone, userName: currentUser.name, method: currentDepositMethodSelected, sender: s, amount: a, status: "Pending", date: getCurrentHumanFormattedDate() };
+
+            const updates = {};
+            updates[`activations/${id}`] = dep;
+            updates[`deposits/${id}`] = dep;
+            updates[`users/${currentUser.phone}/activationPending`] = true;
+
+            update(ref(db), updates).then(() => {
+                document.getElementById('depSender').value = "";
+                document.getElementById('depAmount').value = "";
+                showToast("অ্যাক্টিভেশন রিকোয়েস্ট সাবমিট হয়েছে!", "success");
+                switchTab('wallet');
+            });
+        }
+
+        function handleWithdrawal(e) {
+            e.preventDefault();
+            if (!currentUser.isActivated) return showToast("উইথড্র করতে আগে একাউন্ট সচল করুন!", "error");
+            const ph = document.getElementById('withdrawPhone').value.trim(), pt = parseFloat(document.getElementById('withdrawPoints').value);
+
+            if (currentUser.balance < 800 || currentUser.balance < pt) return showToast("পর্যাপ্ত ব্যালেন্স নাই", "error");
+            if (pt < minWithdrawAmount) return showToast(`সর্বনিম্ন ${minWithdrawAmount} টাকা লাগবে।`, "error");
+
+            const id = "W" + Math.floor(1000 + Math.random() * 9000);
+            const req = { id, userPhone: currentUser.phone, userName: currentUser.name, method: document.querySelector('input[name="paymentMethod"]:checked').value, number: ph, amount: pt, status: "Pending", date: getCurrentHumanFormattedDate() };
+
+            update(ref(db), { [`/users/${currentUser.phone}/balance`]: currentUser.balance - pt, [`/withdrawals/${id}`]: req }).then(() => {
+                document.getElementById('withdrawPhone').value = "";
+                document.getElementById('withdrawPoints').value = "";
+                showToast("উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!", "success");
+            });
+        }
+
+        function renderUserWithdrawalRequests() {
+            const list = document.getElementById('userWithdrawalList');
+            if (!list) return;
+            list.innerHTML = '';
+            const myReqs = Object.values(withdrawals).filter(w => w.userPhone === currentUser.phone);
+            if (myReqs.length === 0) {
+                list.innerHTML = `<div class="text-center py-6 border border-dashed border-gray-200 rounded-2xl"><p class="text-xs text-gray-400">কোনো উত্তোলনের রেকর্ড পাওয়া যায়নি</p></div>`;
+                return;
+            }
+            myReqs.reverse().forEach(r => {
+                let badge = "bg-amber-100 text-amber-800";
+                if (r.status === 'Approved') badge = "bg-emerald-100 text-emerald-800";
+                if (r.status === 'Paid') badge = "bg-blue-100 text-blue-800";
+                if (r.status === 'Rejected') badge = "bg-red-100 text-red-800";
+
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-100 rounded-2xl p-4 flex justify-between items-center shadow-sm text-xs font-sans";
+                card.innerHTML = `<div><div class="flex items-center space-x-2"><span class="font-black text-slate-800">${r.method} Transfer</span><span class="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase ${badge}">${r.status}</span></div><p class="text-[10px] text-gray-400 mt-1">${r.number} • ${r.date}</p></div><span class="font-black text-indigo-600">৳${parseFloat(r.amount).toFixed(0)}</span>`;
+                list.appendChild(card);
+            });
+        }
+
+        function openReferModal() {
+            const modal = document.getElementById('referModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            safeSetText('myReferralCodeText', currentUser ? currentUser.referralCode : '');
+            const container = document.getElementById('myReferralsList');
+            if (!container) return;
+            container.innerHTML = '<p class="text-[10px] text-slate-400 text-center py-4">লোডিং...</p>';
+
+            get(ref(db, 'users')).then((snap) => {
+                const referred = Object.values(snap.val() || {}).filter(u => u?.referredBy === currentUser.referralCode);
+                if (referred.length === 0) {
+                    container.innerHTML = '<p class="text-[10px] text-slate-400 text-center py-4">কোনো রেফার পাওয়া যায়নি।</p>';
+                } else {
+                    container.innerHTML = '';
+                    referred.forEach(u => {
+                        const masked = u.phone.substring(0, 3) + "*****" + u.phone.substring(8);
+                        const div = document.createElement('div');
+                        div.className = "flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-150 text-[10px] font-bold";
+                        div.innerHTML = `<span class="text-slate-700">${u.name} (${masked})</span><span class="${u.isActivated ? 'text-emerald-600' : 'text-red-500'} font-black uppercase text-[9px]">${u.isActivated ? 'অ্যাক্টিভ' : 'পেন্ডিং'}</span>`;
+                        container.appendChild(div);
+                    });
+                }
+            });
+        }
+
+        function closeReferModal() { document.getElementById('referModal')?.classList.add('hidden'); }
+        function showAuthScreen() {
+            ['authSection', 'homeSection', 'tasksSection', 'rulesSection', 'activateSection', 'walletSection', 'profileSection', 'bottomNav'].forEach(s => {
+                const el = document.getElementById(s);
+                if (el) { if (s === 'authSection') el.classList.remove('hidden'); else el.classList.add('hidden'); }
+            });
+        }
+        function showAuthSection() {
+            showAuthScreen();
+            ['loginUsername', 'loginPassword', 'regName', 'regPhone', 'regPassword', 'regPasswordConfirm', 'regReferral'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).value = ""; });
+        }
+        function enterApp() {
+            document.getElementById('authSection')?.classList.add('hidden');
+            document.getElementById('bottomNav')?.classList.remove('hidden');
+            switchTab('home', true);
+        }
+        function togglePassword(inputId, iconId) {
+            const inEl = document.getElementById(inputId), icEl = document.getElementById(iconId);
+            if (inEl && icEl) {
+                if (inEl.type === "password") { inEl.type = "text"; icEl.className = "fa-solid fa-eye text-sm"; }
+                else { inEl.type = "password"; icEl.className = "fa-solid fa-eye-slash text-sm"; }
+            }
+        }
+        function switchAuthTab(tab) {
+            const logBtn = document.getElementById('loginTabBtn'), regBtn = document.getElementById('registerTabBtn'), logForm = document.getElementById('loginForm'), regForm = document.getElementById('registerForm');
+            if (tab === 'login') {
+                logBtn.className = "w-1/2 py-2.5 text-sm font-semibold rounded-lg text-indigo-700 bg-white shadow-sm font-black";
+                regBtn.className = "w-1/2 py-2.5 text-sm font-semibold text-gray-500 rounded-lg";
+                logForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+            } else {
+                regBtn.className = "w-1/2 py-2.5 text-sm font-semibold rounded-lg text-indigo-700 bg-white shadow-sm font-black";
+                logBtn.className = "w-1/2 py-2.5 text-sm font-semibold text-gray-500 rounded-lg";
+                regForm.classList.remove('hidden');
+                logForm.classList.add('hidden');
+            }
+        }
+        function stylePaymentMethod(m) {
+            const b = document.getElementById('bkashLabel'), n = document.getElementById('nagadLabel');
+            if (m === 'bKash') {
+                b.className = "border-2 border-indigo-600 bg-indigo-50/50 rounded-xl p-3 flex items-center justify-between cursor-pointer relative";
+                n.className = "border border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer";
+            } else {
+                n.className = "border-2 border-indigo-600 bg-indigo-50/50 rounded-xl p-3 flex items-center justify-between cursor-pointer relative";
+                b.className = "border border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer";
+            }
+        }
+        function switchDepMethod(m) {
+            currentDepositMethodSelected = m;
+            const b = document.getElementById('depTabBkash'), n = document.getElementById('depTabNagad');
+            if (m === 'bKash') {
+                b.className = "w-1/2 py-2 text-xs font-bold rounded-lg text-white bg-indigo-600 shadow-sm flex items-center justify-center";
+                n.className = "w-1/2 py-2 text-xs font-bold text-indigo-300 rounded-lg flex items-center justify-center";
+            } else {
+                n.className = "w-1/2 py-2 text-xs font-bold rounded-lg text-white bg-indigo-600 shadow-sm flex items-center justify-center";
+                b.className = "w-1/2 py-2 text-xs font-bold text-indigo-300 rounded-lg flex items-center justify-center";
+            }
+        }
+        
+        function openHelplineModal() { document.getElementById('helplineModal')?.classList.remove('hidden'); }
+        function closeHelplineModal() { document.getElementById('helplineModal')?.classList.add('hidden'); }
+
+        function copyToClipboard(text, successMessage = "কপি হয়েছে!") {
+            if (!text) return;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        showToast(successMessage, "success");
+                    })
+                    .catch(() => {
+                        fallbackCopyText(text, successMessage);
+                    });
+            } else {
+                fallbackCopyText(text, successMessage);
+            }
+        }
+
+        function fallbackCopyText(text, successMessage) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed"; 
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.width = "2em";
+            textArea.style.height = "2em";
+            textArea.style.padding = "0";
+            textArea.style.border = "none";
+            textArea.style.outline = "none";
+            textArea.style.boxShadow = "none";
+            textArea.style.background = "transparent";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, 99999);
+            
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {}
+            
+            document.body.removeChild(textArea);
+            
+            if (success) {
+                showToast(successMessage, "success");
+            } else {
+                window.prompt("নিচের টেক্সটটি কপি করুন:", text);
+            }
+        }
+
+        function copyDepositNumber() {
+            copyToClipboard(HELPLINE_RECEIVER_NUMBER, "নাম্বার কপি হয়েছে!");
+        }
+
+        function getReferralLink() {
+            if (!currentUser) return "";
+            let base = window.location.origin;
+            if (!base || base.startsWith('file:') || base.includes('localhost') || base.includes('127.0.0.1')) {
+                base = "https://coin-city-4a831.web.app";
+            }
+            const path = window.location.pathname && window.location.pathname !== '/' ? window.location.pathname : '';
+            return `${base}${path}?ref=${currentUser.referralCode}`;
+        }
+
+        function copyProfileReferLink() {
+            let lnk = "";
+            const prLnk = document.getElementById('profReferLink');
+            if (prLnk && prLnk.innerText && !prLnk.innerText.includes('...')) {
+                lnk = prLnk.innerText.trim();
+            } else {
+                lnk = getReferralLink();
+            }
+            if (!lnk) {
+                showToast("লিংক পাওয়া যায়নি!", "error");
+                return;
+            }
+            copyToClipboard(lnk, "লিংক কপি হয়েছে!");
+        }
+
+        function showToast(m, t = "success") {
+            const toast = document.getElementById('toast'), icon = document.getElementById('toastIcon'), msg = document.getElementById('toastMessage');
+            if (!toast) return;
+            msg.innerText = m;
+            icon.className = t === "success" ? "fa-solid fa-circle-check text-indigo-500 text-sm" : "fa-solid fa-circle-exclamation text-red-500 text-sm";
+            toast.classList.remove('hidden');
+            toast.style.opacity = "1";
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000); 
+        }
+        function getTodayDateString() {
+            const d = new Date();
+            return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+        }
+        function getCurrentHumanFormattedDate() {
+            return new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+        }
+
+        window.switchAuthTab = switchAuthTab;
+        window.handleLogin = handleLogin;
+        window.handleRegister = handleRegister;
+        window.switchTab = switchTab;
+        window.claimDailyBonus = claimDailyBonus;
+        window.startTask = startTask;
+        window.finishTaskAndReward = finishTaskAndReward;
+        window.closeAdModal = closeAdModal;
+        window.switchDepMethod = switchDepMethod;
+        window.copyDepositNumber = copyDepositNumber;
+        window.handleActivationRequest = handleActivationRequest;
+        window.handleWithdrawal = handleWithdrawal;
+        window.togglePassword = togglePassword;
+        window.handleLogout = handleLogout;
+        window.openHelplineModal = openHelplineModal;
+        window.closeHelplineModal = closeHelplineModal;
+        window.openReferModal = openReferModal;
+        window.closeReferModal = closeReferModal;
+        window.copyProfileReferLink = copyProfileReferLink;
+        window.stylePaymentMethod = stylePaymentMethod;
+        window.openLinkSafe = openLinkSafe;
+        
+        window.officialTelegramUrl = officialTelegramUrl;
+        window.proofTelegramUrl = proofTelegramUrl;
+    </script>
+</body>
+</html>
