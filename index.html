@@ -7,7 +7,7 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -872,6 +872,7 @@
             const container = document.getElementById('taskList');
             if (!container) return;
             container.innerHTML = '';
+            if (!currentUser) return; // নিরাপত্তা চেক যোগ করা হলো
             const completed = getCompletedTasks();
             tasks.forEach((t, i) => {
                 const isDone = completed.includes(t.id);
@@ -1046,6 +1047,7 @@
             const list = document.getElementById('userWithdrawalList');
             if (!list) return;
             list.innerHTML = '';
+            if (!currentUser) return; // নিরাপত্তা চেক (Null Check) যোগ করা হলো
             const myReqs = Object.values(withdrawals).filter(w => w.userPhone === currentUser.phone);
             if (myReqs.length === 0) {
                 list.innerHTML = `<div class="text-center py-6 border border-dashed border-gray-200 rounded-2xl"><p class="text-xs text-gray-400">কোনো উত্তোলনের রেকর্ড পাওয়া যায়নি</p></div>`;
