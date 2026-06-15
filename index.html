@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body, button, input, select, textarea { font-family: 'Inter', 'Hind Siliguri', sans-serif !important; }
         body { -webkit-tap-highlight-color: transparent; overflow-x: hidden; margin: 0; padding: 0; }
@@ -32,83 +34,24 @@
         </header>
 
         <main class="flex-grow overflow-y-auto px-4 py-4 pb-6 relative">
-            <section id="authSection" class="space-y-6">
-                <div class="text-center my-4">
-                    <h2 class="text-3xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Coin City</h2>
-                    <p class="text-gray-500 text-xs mt-1">সবচেয়ে বিশ্বস্ত আর্নিং অ্যাপ। কাজ করুন ও পেমেন্ট নিন বিকাশ-নগদে।</p>
+            
+            <!-- Telegram Authentication Loading and Warning Section -->
+            <section id="authSection" class="flex flex-col items-center justify-center h-full py-12 space-y-6">
+                <!-- Loading -->
+                <div id="loadingScreen" class="text-center space-y-4">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+                    <h3 class="text-lg font-bold text-slate-800">অ্যাকাউন্ট যাচাই করা হচ্ছে...</h3>
+                    <p class="text-xs text-slate-500">অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন।</p>
                 </div>
-                <div class="flex bg-gray-150 p-1.5 rounded-2xl border border-slate-200">
-                    <button onclick="switchAuthTab('login')" id="loginTabBtn" class="w-1/2 py-2.5 text-sm font-semibold rounded-lg text-indigo-700 bg-white shadow-sm transition-all font-black">লগইন করুন</button>
-                    <button onclick="switchAuthTab('register')" id="registerTabBtn" class="w-1/2 py-2.5 text-sm font-semibold text-gray-500 rounded-lg transition-all font-semibold">রেজিস্ট্রেশন</button>
+                <!-- Warning when opened outside Telegram -->
+                <div id="notTelegramScreen" class="hidden text-center space-y-5 px-6">
+                    <div class="text-indigo-600 text-6xl animate-soft-bounce">
+                        <i class="fa-brands fa-telegram"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800">Coin City Telegram Mini App</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">এই অ্যাপটি ব্যবহারের জন্য আপনাকে অবশ্যই এটি আপনার টেলিগ্রাম বটের মাধ্যমে প্রবেশ করতে হবে। নিচের বাটনে ক্লিক করে বটে চলে যান।</p>
+                    <a id="botLinkButton" href="https://t.me/CoincityApp_bot" target="_blank" class="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-md text-xs">বট ওপেন করুন</a>
                 </div>
-                <form id="loginForm" class="space-y-4" onsubmit="handleLogin(event)">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">মোবাইল নাম্বার</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-phone absolute left-3 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium" placeholder="017XXXXXXXX">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পাসওয়ার্ড</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="password" id="loginPassword" required class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="••••••••">
-                            <button type="button" onclick="togglePassword('loginPassword', 'loginEyeIcon')" class="absolute right-3.5 top-3.5 text-gray-400 hover:text-indigo-600 transition">
-                                <i id="loginEyeIcon" class="fa-solid fa-eye-slash text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2 py-1">
-                        <input type="checkbox" id="loginRememberMe" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer">
-                        <label for="loginRememberMe" class="text-xs font-bold text-gray-600 cursor-pointer select-none">লগইন তথ্য সংরক্ষণ করুন (Remember Me)</label>
-                    </div>
-                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition duration-200 text-sm font-black">লগইন একাউন্ট</button>
-                </form>
-                <form id="registerForm" class="space-y-4 hidden" onsubmit="handleRegister(event)">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পূর্ণ নাম</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-user absolute left-3 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="text" id="regName" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="আপনার নাম লিখুন">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">মোবাইল নাম্বার (বাংলাদেশী)</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-phone absolute left-3 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="tel" id="regPhone" required class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-semibold" placeholder="01XXXXXXXXX">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পাসওয়ার্ড (নূন্যতম 6 ডিজিট)</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="password" id="regPassword" required minlength="6" class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="••••••••">
-                            <button type="button" onclick="togglePassword('regPassword', 'regEyeIcon')" class="absolute right-3.5 top-3.5 text-gray-400 hover:text-indigo-600 transition">
-                                <i id="regEyeIcon" class="fa-solid fa-eye-slash text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">পাসওয়ার্ড নিশ্চিত করুন</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="password" id="regPasswordConfirm" required minlength="6" class="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="••••••••">
-                            <button type="button" onclick="togglePassword('regPasswordConfirm', 'regEyeIconConfirm')" class="absolute right-3.5 top-3.5 text-gray-400 hover:text-indigo-600 transition">
-                                <i id="regEyeIconConfirm" class="fa-solid fa-eye-slash text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">রেফারেন্স কোড (ঐচ্ছিক)</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-gift absolute left-3 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="text" id="regReferral" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono tracking-wider" placeholder="যেমন: REF1234">
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition duration-200 text-sm font-black">নতুন একাউন্ট তৈরি করুন</button>
-                </form>
             </section>
 
             <section id="homeSection" class="hidden space-y-3">
@@ -208,7 +151,7 @@
                         </h3>
                         <span class="text-[9px] bg-red-600 text-white font-black px-2 py-0.5 rounded-full uppercase">আবশ্যক</span>
                     </div>
-                    <p id="activationNoticeText" class="text-xs text-indigo-200 leading-relaxed mb-4">লোড হচ্ছে...</p>
+                    <p id="activationNoticeText" class="text-xs text-indigo-200 leading-relaxed mb-4">로드 হচ্ছে...</p>
                     <div class="bg-black/30 p-1 rounded-xl flex mb-4 border border-indigo-800">
                         <button type="button" onclick="switchDepMethod('bKash')" id="depTabBkash" class="w-1/2 py-2 text-[10px] font-bold rounded-lg text-white bg-indigo-600 shadow-sm flex items-center justify-center">bKash (বিকাশ)</button>
                         <button type="button" onclick="switchDepMethod('Nagad')" id="depTabNagad" class="w-1/2 py-2 text-[10px] font-bold text-indigo-300 rounded-lg flex items-center justify-center">Nagad (নগদ)</button>
@@ -301,7 +244,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">অ্যাকাউন্ট নাম্বার</label>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">বিকাশ/নগদ অ্যাকাউন্ট নাম্বার</label>
                             <input type="tel" id="withdrawPhone" required pattern="01[3-9]\d{8}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none" placeholder="017XXXXXXXX">
                         </div>
                         <div>
@@ -339,7 +282,7 @@
                         </div>
                     </div>
                     <h3 id="profName" class="font-extrabold text-xl text-white mt-4 tracking-wide">...</h3>
-                    <p id="profPhone" class="text-xs text-indigo-300 font-mono font-bold mt-1 tracking-widest">01*********</p>
+                    <p id="profPhone" class="text-xs text-indigo-300 font-mono font-bold mt-1 tracking-widest">TG-ID: ...</p>
                 </div>
                 <div class="grid grid-cols-2 gap-3.5">
                     <div class="bg-white border border-slate-150 rounded-2xl p-4 text-center shadow-sm">
@@ -385,7 +328,7 @@
                     </div>
                     <p class="text-[11px] text-indigo-100/95 mb-3.5 leading-relaxed">বন্ধুদের ইনভাইট করুন এবং প্রতি রেফারে সরাসরি 20 টাকা বোনাস লাভ করুন!</p>
                     <div class="flex items-center justify-between bg-black/25 border border-white/10 rounded-2xl p-2">
-                        <span id="profReferLink" class="text-xs font-mono font-semibold text-indigo-200 overflow-x-auto whitespace-nowrap scrollbar-none mr-3 pl-2">https://coin-city-4a831.web.app?ref=...</span>
+                        <span id="profReferLink" class="text-xs font-mono font-semibold text-indigo-200 overflow-x-auto whitespace-nowrap scrollbar-none mr-3 pl-2">https://t.me/CoincityApp_bot/...</span>
                         <button onclick="copyProfileReferLink()" class="bg-yellow-400 hover:bg-yellow-500 text-[11px] px-4 py-2 rounded-xl font-bold text-slate-950 transition flex items-center flex-shrink-0 shadow-md">
                             <i class="fa-solid fa-copy mr-1.5"></i> কপি
                         </button>
@@ -393,7 +336,7 @@
                 </div>
                 <div class="pt-1.5">
                     <button onclick="handleLogout()" class="w-full flex justify-between items-center p-4 text-sm font-bold text-red-600 bg-rose-50 border border-rose-100 hover:bg-rose-100 rounded-2xl transition shadow-sm group">
-                        <span class="flex items-center"><i class="fa-solid fa-arrow-right-from-bracket text-red-500 text-lg mr-3.5 transition-transform group-hover:translate-x-1"></i> লগআউট করুন</span>
+                        <span class="flex items-center"><i class="fa-solid fa-circle-xmark text-red-500 text-lg mr-3.5 transition-transform group-hover:translate-x-1"></i> অ্যাপ বন্ধ করুন</span>
                         <i class="fa-solid fa-chevron-right text-red-400 text-xs transition-transform group-hover:translate-x-1"></i>
                     </button>
                 </div>
@@ -524,6 +467,10 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // আপনার টেলিগ্রাম বট এবং মিনি অ্যাপের শর্টনেম নিচে সঠিকভাবে বসানো হয়েছে
+        const TELEGRAM_BOT_USERNAME = "CoincityApp_bot"; 
+        const TELEGRAM_APP_SHORT_NAME = "coincity"; // আপনি BotFather-এ অন্য শর্টনেম দিলে এখানে পরিবর্তন করবেন
+
         const REF_REWARD = 20.00; 
         let HELPLINE_RECEIVER_NUMBER = "01407746853";
 
@@ -534,7 +481,7 @@
         let task1TelegramUrl = "https://t.me/coincity_official";
         let task2TelegramUrl = "https://t.me/coincity_proofs";
 
-        const defaultNotice = "স্বাগতম Coin City অ্যাপে! এটি বাংলাদেশের সবচেয়ে বিশ্বস্ত আর্নিং প্ল্যাটফর্ম। প্রতিদিন স্পন্সর লিংক ভিজিট এবং রেফার করে টাকা ইনকাম করুন।";
+        const defaultNotice = "স্বাগতম Coin City অ্যাপে! এটি বাংলাদেশের সবচেয়ে বিশ্বস্ত টেলিগ্রাম আর্নিং মিনি অ্যাপ। প্রতিদিন স্পন্সর লিংক ভিজিট এবং রেফার করে টাকা ইনকাম করুন।";
         const defaultTasks = [
             { id: "task_t1", title: "টেলিগ্রাম জয়েন করুন (টাস্ক 1)", reward: 7.00, type: "link", url: "https://t.me/coincity_official", time: 20 },
             { id: "task_t2", title: "টেলিগ্রাম জয়েন করুন (টাস্ক 2)", reward: 7.00, type: "link", url: "https://t.me/coincity_proofs", time: 20 },
@@ -666,37 +613,92 @@
             generateLiveScrollerData();
             forceRefreshMarqueeText(); 
             initializeDatabaseSync();
-            history.replaceState({ tab: 'auth' }, '');
-            const savedPhone = localStorage.getItem('cc_saved_phone'), savedPass = localStorage.getItem('cc_saved_pass');
-            if (savedPhone && savedPass) {
-                document.getElementById('loginUsername').value = savedPhone;
-                document.getElementById('loginPassword').value = savedPass;
-                document.getElementById('loginRememberMe').checked = true;
-            }
             setInterval(() => { if (currentUser) checkDailyReset(); }, 10000);
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            if (refCode) {
-                const referralInput = document.getElementById('regReferral');
-                if (referralInput) {
-                    referralInput.value = refCode.trim().toUpperCase();
-                    
-                    // সেশন চেক করে নতুন ইউজার হলে ডাইরেক্ট রেজিস্ট্রেশন ট্যাবে পাঠিয়ে দেওয়া হবে
-                    const cachedSession = localStorage.getItem('cc_current_user_phone');
-                    if (!cachedSession) {
-                        switchAuthTab('register');
-                        showToast("রেফারেল লিংক সচল হয়েছে!", "success");
-                    }
-                }
-            }
+            const botBtn = document.getElementById('botLinkButton');
+            if (botBtn) botBtn.href = `https://t.me/${TELEGRAM_BOT_USERNAME}`;
         });
 
+        // Telegram Auto Authentication System
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand(); 
+
+        function handleTelegramAuth() {
+            const tgUser = tg.initDataUnsafe?.user;
+            if (!tgUser || !tgUser.id) {
+                // টেলিগ্রামের বাইরে থেকে ওপেন করলে ওয়ার্নিং পেজ দেখাবে
+                document.getElementById('loadingScreen')?.classList.add('hidden');
+                document.getElementById('notTelegramScreen')?.classList.remove('hidden');
+                return;
+            }
+
+            const userId = tgUser.id.toString();
+            const userName = tgUser.first_name || "Telegram User";
+
+            // ডাটাবেজে ইউজার আছে কিনা তা চেক করা
+            get(ref(db, `users/${userId}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const user = snapshot.val();
+                    if (user.isBanned) {
+                        showToast("অ্যাকাউন্ট ব্লকড!", "error");
+                        return;
+                    }
+                    currentUser = user;
+                    enterApp();
+                    attachUserListener(userId);
+                } else {
+                    // নতুন ইউজার হলে অটোমেটিক অ্যাকাউন্ট তৈরি (রেজিস্ট্রেশন)
+                    const refCode = tg.initDataUnsafe?.start_param || null;
+                    const newUser = { 
+                        name: userName, 
+                        phone: userId, // টেলিগ্রাম আইডিটি ফোন নাম্বার ফিল্ডে সংরক্ষিত হবে
+                        password: "tg_mini_app_user", 
+                        balance: 50.00, 
+                        referrals: 0, 
+                        referralCode: userId, // রেফার কোড হিসেবে টেলিগ্রাম আইডি ব্যবহার হবে
+                        dailyEarned: 0.00, 
+                        lastEarnedDate: getTodayDateString(), 
+                        referredBy: refCode || null, 
+                        isActivated: false, 
+                        isBanned: false, 
+                        completedTasksToday: [] 
+                    };
+
+                    const updates = {};
+                    if (refCode && refCode !== userId) {
+                        get(ref(db, `users/${refCode}`)).then((refSnap) => {
+                            if (refSnap.exists()) {
+                                const refUser = refSnap.val();
+                                updates[`/users/${refCode}/balance`] = parseFloat(refUser.balance || 0) + REF_REWARD;
+                                updates[`/users/${refCode}/referrals`] = parseInt(refUser.referrals || 0) + 1;
+                                newUser.balance += 10.00; // রেফার লিংকে অ্যাকাউন্ট খোলার জন্য বোনাস
+                                showToast("রেফার সফল! +10 টাকা বোনাস", "success");
+                            }
+                            updates[`/users/${userId}`] = newUser;
+                            update(ref(db), updates).then(() => {
+                                currentUser = newUser;
+                                enterApp();
+                                attachUserListener(userId);
+                            });
+                        });
+                    } else {
+                        updates[`/users/${userId}`] = newUser;
+                        update(ref(db), updates).then(() => {
+                            currentUser = newUser;
+                            enterApp();
+                            attachUserListener(userId);
+                        });
+                    }
+                }
+            });
+        }
+
         let userListenerUnsubscribe = null;
-        function attachUserListener(phone) {
+        function attachUserListener(userId) {
             if (userListenerUnsubscribe) userListenerUnsubscribe();
-            update(ref(db, `users/${phone}`), { lastActiveTime: Date.now() });
-            userListenerUnsubscribe = onValue(ref(db, `users/${phone}`), (snapshot) => {
+            update(ref(db, `users/${userId}`), { lastActiveTime: Date.now() });
+            userListenerUnsubscribe = onValue(ref(db, `users/${userId}`), (snapshot) => {
                 const latestUser = snapshot.val();
                 if (latestUser) {
                     if (latestUser.isBanned) {
@@ -734,8 +736,7 @@
                 tasks = (data && (Array.isArray(data) ? data : Object.values(data)).filter(t => t?.id)) || defaultTasks;
                 renderTasksList();
             });
-            const cachedSession = localStorage.getItem('cc_current_user_phone');
-            if (cachedSession) { enterApp(); attachUserListener(cachedSession); } else { showAuthScreen(); }
+            
             onValue(ref(db, 'withdrawals'), (snap) => { withdrawals = snap.val() || {}; renderUserWithdrawalRequests(); });
             onValue(ref(db, 'activations'), (snap) => { activations = snap.val() || {}; });
             
@@ -778,7 +779,8 @@
                 const profProofBtn = document.getElementById('profProofBtn');
                 if (profProofBtn) profProofBtn.setAttribute('onclick', `openLinkSafe('${proofTelegramUrl}')`);
                 
-                updateUIStates();
+                // সেটিংস ডাটাবেজ থেকে সফলভাবে লোড হওয়ার পর অটো অথেন্টিকেশন রান হবে
+                handleTelegramAuth();
             });
         }
 
@@ -813,17 +815,13 @@
                 history.pushState({ tab: currentTab }, '', '');
                 return;
             }
-            const isLoggedIn = !!localStorage.getItem('cc_current_user_phone');
-            if (isLoggedIn) {
+            if (currentUser) {
                 if (event.state && event.state.tab && event.state.tab !== 'auth') {
                     switchTab(event.state.tab, false);
                 } else {
                     switchTab('home', false);
                     history.pushState({ tab: 'home' }, '', '');
                 }
-            } else {
-                showAuthScreen();
-                history.pushState({ tab: 'auth' }, '', '');
             }
         };
 
@@ -834,7 +832,7 @@
             safeSetText('dashReferrals', (currentUser.referrals || 0) + " Users");
 
             safeSetText('profName', currentUser.name);
-            safeSetText('profPhone', currentUser.phone);
+            safeSetText('profPhone', "TG-ID: " + currentUser.phone);
             safeSetText('profTotalEarned', "৳" + currentUser.balance.toFixed(0));
             safeSetText('tasksDailyCap', currentUser.dailyEarned.toFixed(0));
             safeSetText('walletBDT', currentUser.balance.toFixed(0));
@@ -993,89 +991,13 @@
             });
         }
 
-        function handleRegister(e) {
-            e.preventDefault();
-            const n = document.getElementById('regName').value.trim();
-            const ph = document.getElementById('regPhone').value.trim();
-            const p = document.getElementById('regPassword').value;
-            const pc = document.getElementById('regPasswordConfirm').value;
-            const r = document.getElementById('regReferral').value.trim().toUpperCase();
-
-            if (p !== pc) return showToast("পাসওয়ার্ড মিলছে না!", "error");
-
-            get(ref(db, `users/${ph}`)).then((snapshot) => {
-                if (snapshot.exists()) return showToast("ইতিমধ্যে নিবন্ধিত নাম্বার!", "error");
-                const code = "REF" + Math.floor(1000 + Math.random() * 9500);
-                const newUser = { name: n, phone: ph, password: p, balance: 50.00, referrals: 0, referralCode: code, dailyEarned: 0.00, lastEarnedDate: getTodayDateString(), referredBy: r || null, isActivated: false, isBanned: false, completedTasksToday: [] };
-
-                const updates = {};
-                if (r) {
-                    get(ref(db, 'users')).then((snap) => {
-                        const all = snap.val() || {}, k = Object.keys(all).find(x => all[x].referralCode === r);
-                        if (k) {
-                            updates[`/users/${k}/balance`] = parseFloat(all[k].balance || 0) + REF_REWARD;
-                            updates[`/users/${k}/referrals`] = parseInt(all[k].referrals || 0) + 1;
-                            newUser.balance += 10.00;
-                            showToast("রেফার সফল! +10 টাকা বোনাস", "success");
-                        } else {
-                            showToast("ভুল রেফারেল কোড।", "error");
-                        }
-                        updates[`/users/${ph}`] = newUser;
-                        update(ref(db), updates).then(() => {
-                            localStorage.setItem('cc_current_user_phone', ph);
-                            currentUser = newUser;
-                            enterApp();
-                            attachUserListener(ph);
-                            history.replaceState({ tab: 'home' }, '', '');
-                        });
-                    });
-                } else {
-                    updates[`/users/${ph}`] = newUser;
-                    update(ref(db), updates).then(() => {
-                        localStorage.setItem('cc_current_user_phone', ph);
-                        currentUser = newUser;
-                        enterApp();
-                        attachUserListener(ph);
-                        history.replaceState({ tab: 'home' }, '', '');
-                    });
-                }
-            });
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const ph = document.getElementById('loginUsername').value.trim(), p = document.getElementById('loginPassword').value;
-            get(ref(db, `users/${ph}`)).then((snap) => {
-                const user = snap.val();
-                if (user && user.password === p) {
-                    if (user.isBanned) return showToast("অ্যাকাউন্ট ব্লকড!", "error");
-                    const rem = document.getElementById('loginRememberMe')?.checked;
-                    if (rem) {
-                        localStorage.setItem('cc_saved_phone', ph);
-                        localStorage.setItem('cc_saved_pass', p);
-                    } else {
-                        localStorage.removeItem('cc_saved_phone');
-                        localStorage.removeItem('cc_saved_pass');
-                    }
-                    currentUser = user;
-                    localStorage.setItem('cc_current_user_phone', ph);
-                    showToast("স্বাগতম, " + user.name, "success");
-                    enterApp();
-                    attachUserListener(ph);
-                    history.replaceState({ tab: 'home' }, '', '');
-                } else {
-                    showToast("মোবাইল বা পাসওয়ার্ড ভুল!", "error");
-                }
-            });
-        }
-
         function handleLogout() {
-            if (window.userHeartbeatInterval) clearInterval(window.userHeartbeatInterval);
-            localStorage.removeItem('cc_current_user_phone');
-            currentUser = null;
-            showAuthSection();
-            history.replaceState({ tab: 'auth' }, '', '');
-            history.pushState({ tab: 'auth' }, '', '');
+            // টেলিগ্রাম মিনি অ্যাপ বন্ধ করার রিকোয়েস্ট
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.close();
+            } else {
+                showToast("শুধুমাত্র টেলিগ্রাম অ্যাপে বন্ধ করা সম্ভব", "error");
+            }
         }
 
         function handleActivationRequest(e) {
@@ -1158,7 +1080,7 @@
                 } else {
                     container.innerHTML = '';
                     referred.forEach(u => {
-                        const masked = u.phone.substring(0, 3) + "*****" + u.phone.substring(8);
+                        const masked = u.phone.length > 5 ? u.phone.substring(0, 3) + "***" + u.phone.substring(u.phone.length - 2) : u.phone;
                         const div = document.createElement('div');
                         div.className = "flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-150 text-[10px] font-bold";
                         div.innerHTML = `<span class="text-slate-700">${u.name} (${masked})</span><span class="${u.isActivated ? 'text-emerald-600' : 'text-red-500'} font-black uppercase text-[9px]">${u.isActivated ? 'অ্যাক্টিভ' : 'পেন্ডিং'}</span>`;
@@ -1177,33 +1099,11 @@
         }
         function showAuthSection() {
             showAuthScreen();
-            ['loginUsername', 'loginPassword', 'regName', 'regPhone', 'regPassword', 'regPasswordConfirm', 'regReferral'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).value = ""; });
         }
         function enterApp() {
             document.getElementById('authSection')?.classList.add('hidden');
             document.getElementById('bottomNav')?.classList.remove('hidden');
             switchTab('home', true);
-        }
-        function togglePassword(inputId, iconId) {
-            const inEl = document.getElementById(inputId), icEl = document.getElementById(iconId);
-            if (inEl && icEl) {
-                if (inEl.type === "password") { inEl.type = "text"; icEl.className = "fa-solid fa-eye text-sm"; }
-                else { inEl.type = "password"; icEl.className = "fa-solid fa-eye-slash text-sm"; }
-            }
-        }
-        function switchAuthTab(tab) {
-            const logBtn = document.getElementById('loginTabBtn'), regBtn = document.getElementById('registerTabBtn'), logForm = document.getElementById('loginForm'), regForm = document.getElementById('registerForm');
-            if (tab === 'login') {
-                logBtn.className = "w-1/2 py-2.5 text-sm font-semibold rounded-lg text-indigo-700 bg-white shadow-sm font-black";
-                regBtn.className = "w-1/2 py-2.5 text-sm font-semibold text-gray-500 rounded-lg";
-                logForm.classList.remove('hidden');
-                regForm.classList.add('hidden');
-            } else {
-                regBtn.className = "w-1/2 py-2.5 text-sm font-semibold rounded-lg text-indigo-700 bg-white shadow-sm font-black";
-                logBtn.className = "w-1/2 py-2.5 text-sm font-semibold text-gray-500 rounded-lg";
-                regForm.classList.remove('hidden');
-                logForm.classList.add('hidden');
-            }
         }
         function stylePaymentMethod(m) {
             const b = document.getElementById('bkashLabel'), n = document.getElementById('nagadLabel');
@@ -1284,12 +1184,8 @@
 
         function getReferralLink() {
             if (!currentUser) return "";
-            let base = window.location.origin;
-            if (!base || base.startsWith('file:') || base.includes('localhost') || base.includes('127.0.0.1')) {
-                base = "https://coin-city-4a831.web.app";
-            }
-            const path = window.location.pathname && window.location.pathname !== '/' ? window.location.pathname : '';
-            return `${base}${path}?ref=${currentUser.referralCode}`;
+            // Telegram Native Direct Link structure:
+            return `https://t.me/${TELEGRAM_BOT_USERNAME}/${TELEGRAM_APP_SHORT_NAME}?startapp=${currentUser.referralCode}`;
         }
 
         function copyProfileReferLink() {
@@ -1327,9 +1223,6 @@
             return new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
         }
 
-        window.switchAuthTab = switchAuthTab;
-        window.handleLogin = handleLogin;
-        window.handleRegister = handleRegister;
         window.switchTab = switchTab;
         window.claimDailyBonus = claimDailyBonus;
         window.startTask = startTask;
@@ -1339,7 +1232,6 @@
         window.copyDepositNumber = copyDepositNumber;
         window.handleActivationRequest = handleActivationRequest;
         window.handleWithdrawal = handleWithdrawal;
-        window.togglePassword = togglePassword;
         window.handleLogout = handleLogout;
         window.openHelplineModal = openHelplineModal;
         window.closeHelplineModal = closeHelplineModal;
