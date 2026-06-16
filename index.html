@@ -1211,8 +1211,8 @@
 
         function getReferralLink() {
             if (!currentUser) return "";
-            // Telegram Bot deep link - This is 100% reliable for starting bot and passing params
-            return `https://t.me/${TELEGRAM_BOT_USERNAME}?start=${currentUser.referralCode}`;
+            // Telegram Native Direct Link structure:
+            return `https://t.me/${TELEGRAM_BOT_USERNAME}/${TELEGRAM_APP_SHORT_NAME}?startapp=${currentUser.referralCode}`;
         }
 
         function copyProfileReferLink() {
