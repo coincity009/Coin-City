@@ -609,6 +609,12 @@
             return [];
         }
 
+        function safeFormatNumber(val, decimals = 0) {
+            if (val === undefined || val === null) return "0";
+            const num = parseFloat(val);
+            return isNaN(num) ? "0" : num.toFixed(decimals);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             generateLiveScrollerData();
             forceRefreshMarqueeText(); 
@@ -620,14 +626,22 @@
         });
 
         // Telegram Auto Authentication System
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand(); 
+        const tg = window.Telegram ? window.Telegram.WebApp : null;
+        if (tg) {
+            tg.ready();
+            tg.expand(); 
+        }
 
         function handleTelegramAuth() {
+            if (!tg) {
+                // টেলিগ্রামের বাইরে থেকে ওপেন করলে ওয়ার্নিং পেজ দেখাবে
+                document.getElementById('loadingScreen')?.classList.add('hidden');
+                document.getElementById('notTelegramScreen')?.classList.remove('hidden');
+                return;
+            }
+
             const tgUser = tg.initDataUnsafe?.user;
             if (!tgUser || !tgUser.id) {
-                // টেলিগ্রামের বাইরে থেকে ওপেন করলে ওয়ার্নিং পেজ দেখাবে
                 document.getElementById('loadingScreen')?.classList.add('hidden');
                 document.getElementById('notTelegramScreen')?.classList.remove('hidden');
                 return;
@@ -852,15 +866,20 @@
 
         function updateUIStates() {
             if (!currentUser) return;
-            safeSetText('dashBDT', currentUser.balance.toFixed(0));
-            safeSetText('dashDaily', currentUser.dailyEarned.toFixed(0));
-            safeSetText('dashReferrals', (currentUser.referrals || 0) + " Users");
 
-            safeSetText('profName', currentUser.name);
-            safeSetText('profPhone', "TG-ID: " + currentUser.phone);
-            safeSetText('profTotalEarned', "৳" + currentUser.balance.toFixed(0));
-            safeSetText('tasksDailyCap', currentUser.dailyEarned.toFixed(0));
-            safeSetText('walletBDT', currentUser.balance.toFixed(0));
+            const balanceVal = safeFormatNumber(currentUser.balance);
+            const dailyEarnedVal = safeFormatNumber(currentUser.dailyEarned);
+            const referralsCount = currentUser.referrals || 0;
+
+            safeSetText('dashBDT', balanceVal);
+            safeSetText('dashDaily', dailyEarnedVal);
+            safeSetText('dashReferrals', referralsCount + " Users");
+
+            safeSetText('profName', currentUser.name || "User");
+            safeSetText('profPhone', "TG-ID: " + (currentUser.phone || ""));
+            safeSetText('profTotalEarned', "৳" + balanceVal);
+            safeSetText('tasksDailyCap', dailyEarnedVal);
+            safeSetText('walletBDT', balanceVal);
 
             const lnk = getReferralLink();
             const prLnk = document.getElementById('profReferLink');
@@ -868,7 +887,7 @@
 
             const actContainer = document.getElementById('walletActivateContainer');
             if (actContainer) {
-                if (!currentUser.isActivated && currentUser.balance >= 800) {
+                if (!currentUser.isActivated && (currentUser.balance || 0) >= 800) {
                     actContainer.classList.remove('hidden');
                 } else {
                     actContainer.classList.add('hidden');
@@ -897,18 +916,20 @@
             const container = document.getElementById('taskList');
             if (!container) return;
             container.innerHTML = '';
-            if (!currentUser) return; // নিরাপত্তা চেক যোগ করা হলো
+            if (!currentUser) return;
             const completed = getCompletedTasks();
             tasks.forEach((t, i) => {
+                if (!t) return;
                 const isDone = completed.includes(t.id);
                 const wrapper = document.createElement('div');
+                const taskReward = safeFormatNumber(t.reward);
                 if (isDone) {
                     wrapper.className = "bg-slate-100 border border-slate-200 rounded-2xl p-4 flex items-center justify-between opacity-60 pointer-events-none select-none";
-                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">${t.title}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">${t.title || ""}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
                 } else {
                     const isReferTask = t.id === 'task_t3' || t.id === 'task_t4' || t.type === 'refer' || t.type === 'refer5' || t.title?.includes('রেফার');
                     wrapper.className = "bg-white border border-slate-100 rounded-2xl p-4 flex items-center justify-between shadow-sm";
-                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#${i+1}</span><i class="${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">${t.title}</h4><p class="text-xs text-slate-400">সময়: ${t.time}s • রিওয়ার্ড: ৳${parseFloat(t.reward).toFixed(0)}</p></div></div><button onclick="startTask('${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold">+৳${parseFloat(t.reward).toFixed(0)}</button>`;
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#${i+1}</span><i class="${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">${t.title || ""}</h4><p class="text-xs text-slate-400">সময়: ${t.time || 20}s • রিওয়ার্ড: ৳${taskReward}</p></div></div><button onclick="startTask('${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold">+৳${taskReward}</button>`;
                 }
                 container.appendChild(wrapper);
             });
@@ -922,37 +943,39 @@
             const completed = getCompletedTasks();
             if (completed.includes(taskId)) return showToast("ইতিমধ্যে সম্পন্ন করা হয়েছে!", "error");
 
+            const taskReward = parseFloat(task.reward || 0);
+
             if (task.id === "task_t1") {
                 openLinkSafe(task1TelegramUrl);
                 completed.push(task.id);
-                update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => showToast(`+৳${parseFloat(task.reward).toFixed(0)} যুক্ত হয়েছে!`, "success"));
+                update(ref(db, `users/${currentUser.phone}`), { balance: (currentUser.balance || 0) + taskReward, dailyEarned: (currentUser.dailyEarned || 0) + taskReward, completedTasksToday: completed }).then(() => showToast(`+৳${safeFormatNumber(taskReward)} যুক্ত হয়েছে!`, "success"));
                 return;
             }
 
             if (task.id === "task_t2") {
                 openLinkSafe(task2TelegramUrl);
                 completed.push(task.id);
-                update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => showToast(`+৳${parseFloat(task.reward).toFixed(0)} যুক্ত হয়েছে!`, "success"));
+                update(ref(db, `users/${currentUser.phone}`), { balance: (currentUser.balance || 0) + taskReward, dailyEarned: (currentUser.dailyEarned || 0) + taskReward, completedTasksToday: completed }).then(() => showToast(`+৳${safeFormatNumber(taskReward)} যুক্ত হয়েছে!`, "success"));
                 return;
             }
 
             if (task.id === "task_t3" || task.type === "refer" || task.title?.includes("3 জন")) {
                 if ((currentUser.referrals || 0) < 3) return showToast("কমপক্ষে 3 জন রেফার প্রয়োজন!", "error");
                 completed.push(task.id);
-                update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => showToast(`+৳${parseFloat(task.reward).toFixed(0)} যুক্ত হয়েছে!`, "success"));
+                update(ref(db, `users/${currentUser.phone}`), { balance: (currentUser.balance || 0) + taskReward, dailyEarned: (currentUser.dailyEarned || 0) + taskReward, completedTasksToday: completed }).then(() => showToast(`+৳${safeFormatNumber(taskReward)} যুক্ত হয়েছে!`, "success"));
                 return;
             }
 
             if (task.id === "task_t4" || task.type === "refer5" || task.title?.includes("5 জন")) {
                 if ((currentUser.referrals || 0) < 5) return showToast("কমপক্ষে 5 জন রেফার প্রয়োজন!", "error");
                 completed.push(task.id);
-                update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => showToast(`+৳${parseFloat(task.reward).toFixed(0)} যুক্ত হয়েছে!`, "success"));
+                update(ref(db, `users/${currentUser.phone}`), { balance: (currentUser.balance || 0) + taskReward, dailyEarned: (currentUser.dailyEarned || 0) + taskReward, completedTasksToday: completed }).then(() => showToast(`+৳${safeFormatNumber(taskReward)} যুক্ত হয়েছে!`, "success"));
                 return;
             }
 
             const modal = document.getElementById('adModal'), countdownEl = document.getElementById('adCountdown'), closeBtn = document.getElementById('adCloseBtn'), titleEl = document.getElementById('adModalTitle'), videoContainer = document.getElementById('adVideoContainer');
             if (!modal) return;
-            titleEl.innerText = task.title;
+            titleEl.innerText = task.title || "Task";
             modal.classList.remove('hidden');
             closeBtn.disabled = true;
             
@@ -983,7 +1006,7 @@
                     countdownEl.innerText = "Done";
                     closeBtn.disabled = false;
                     closeBtn.className = "w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold rounded-xl text-sm shadow-lg shadow-emerald-500/20 active:scale-95 transition-all duration-100 cursor-pointer border border-emerald-400/25";
-                    closeBtn.innerText = `Claim ৳${parseFloat(task.reward).toFixed(0)}`;
+                    closeBtn.innerText = `Claim ৳${safeFormatNumber(taskReward)}`;
                     closeBtn.onclick = () => finishTaskAndReward(task);
                 }
             }, 1000);
@@ -994,7 +1017,8 @@
             checkDailyReset();
             const completed = getCompletedTasks();
             completed.push(task.id);
-            update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + parseFloat(task.reward), dailyEarned: currentUser.dailyEarned + parseFloat(task.reward), completedTasksToday: completed }).then(() => {
+            const taskReward = parseFloat(task.reward || 0);
+            update(ref(db, `users/${currentUser.phone}`), { balance: (currentUser.balance || 0) + taskReward, dailyEarned: (currentUser.dailyEarned || 0) + taskReward, completedTasksToday: completed }).then(() => {
                 showToast("ব্যালেন্স সফলভাবে আপডেট হয়েছে।", "success");
             });
         }
@@ -1010,7 +1034,7 @@
             checkDailyReset();
             const key = `cc_dailycheck_${currentUser.phone}`;
             if (localStorage.getItem(key) === today) return showToast("আজকের বোনাস নেওয়া হয়েছে!", "error");
-            update(ref(db, `users/${currentUser.phone}`), { balance: currentUser.balance + 10.00, dailyEarned: currentUser.dailyEarned + 10.00 }).then(() => {
+            update(ref(db, `users/${currentUser.phone}`), { balance: (currentUser.balance || 0) + 10.00, dailyEarned: (currentUser.dailyEarned || 0) + 10.00 }).then(() => {
                 localStorage.setItem(key, today);
                 showToast("ডেইলি বোনাস সফল! +10 টাকা", "success");
                 updateUIStates();
@@ -1055,13 +1079,13 @@
             if (!currentUser.isActivated) return showToast("উইথড্র করতে আগে একাউন্ট সচল করুন!", "error");
             const ph = document.getElementById('withdrawPhone').value.trim(), pt = parseFloat(document.getElementById('withdrawPoints').value);
 
-            if (currentUser.balance < 800 || currentUser.balance < pt) return showToast("পর্যাপ্ত ব্যালেন্স নাই", "error");
+            if ((currentUser.balance || 0) < 800 || (currentUser.balance || 0) < pt) return showToast("পর্যাপ্ত ব্যালেন্স নাই", "error");
             if (pt < minWithdrawAmount) return showToast(`সর্বনিম্ন ${minWithdrawAmount} টাকা লাগবে।`, "error");
 
             const id = "W" + Math.floor(1000 + Math.random() * 9000);
             const req = { id, userPhone: currentUser.phone, userName: currentUser.name, method: document.querySelector('input[name="paymentMethod"]:checked').value, number: ph, amount: pt, status: "Pending", date: getCurrentHumanFormattedDate() };
 
-            update(ref(db), { [`/users/${currentUser.phone}/balance`]: currentUser.balance - pt, [`/withdrawals/${id}`]: req }).then(() => {
+            update(ref(db), { [`/users/${currentUser.phone}/balance`]: (currentUser.balance || 0) - pt, [`/withdrawals/${id}`]: req }).then(() => {
                 document.getElementById('withdrawPhone').value = "";
                 document.getElementById('withdrawPoints').value = "";
                 showToast("উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!", "success");
@@ -1086,7 +1110,7 @@
 
                 const card = document.createElement('div');
                 card.className = "bg-white border border-slate-100 rounded-2xl p-4 flex justify-between items-center shadow-sm text-xs font-sans";
-                card.innerHTML = `<div><div class="flex items-center space-x-2"><span class="font-black text-slate-800">${r.method} Transfer</span><span class="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase ${badge}">${r.status}</span></div><p class="text-[10px] text-gray-400 mt-1">${r.number} • ${r.date}</p></div><span class="font-black text-indigo-600">৳${parseFloat(r.amount).toFixed(0)}</span>`;
+                card.innerHTML = `<div><div class="flex items-center space-x-2"><span class="font-black text-slate-800">${r.method || ""} Transfer</span><span class="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase ${badge}">${r.status || ""}</span></div><p class="text-[10px] text-gray-400 mt-1">${r.number || ""} • ${r.date || ""}</p></div><span class="font-black text-indigo-600">৳${safeFormatNumber(r.amount)}</span>`;
                 list.appendChild(card);
             });
         }
@@ -1110,7 +1134,7 @@
                         const masked = u.phone.length > 5 ? u.phone.substring(0, 3) + "***" + u.phone.substring(u.phone.length - 2) : u.phone;
                         const div = document.createElement('div');
                         div.className = "flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-150 text-[10px] font-bold";
-                        div.innerHTML = `<span class="text-slate-700">${u.name} (${masked})</span><span class="${u.isActivated ? 'text-emerald-600' : 'text-red-500'} font-black uppercase text-[9px]">${u.isActivated ? 'অ্যাক্টিভ' : 'পেন্ডিং'}</span>`;
+                        div.innerHTML = `<span class="text-slate-700">${u.name || "User"} (${masked})</span><span class="${u.isActivated ? 'text-emerald-600' : 'text-red-500'} font-black uppercase text-[9px]">${u.isActivated ? 'অ্যাক্টিভ' : 'পেন্ডিং'}</span>`;
                         container.appendChild(div);
                     });
                 }
