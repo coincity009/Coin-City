@@ -88,7 +88,7 @@
                     <button onclick="switchTab('tasks')" class="bg-indigo-50/50 hover:bg-indigo-100/80 p-3.5 rounded-xl border border-indigo-100/50 flex items-center justify-between group shadow-sm">
                         <div class="flex items-center space-x-2.5">
                             <div class="bg-indigo-600 text-white p-2 rounded-lg w-8 h-8 flex items-center justify-center shadow-md"><i class="fa-solid fa-play text-xs"></i></div>
-                            <span class="font-bold text-indigo-900 text-xs">데일리 টাস্ক</span>
+                            <span class="font-bold text-indigo-900 text-xs">ডেইলি টাস্ক</span>
                         </div>
                         <i class="fa-solid fa-chevron-right text-indigo-400 text-[10px]"></i>
                     </button>
@@ -588,9 +588,9 @@
             const today = getTodayDateString();
             if (currentUser.lastEarnedDate !== today) {
                 const updates = {};
-                updates[`/users/${currentUser.phone}/completedTasksToday`] = "";
-                updates[`/users/${currentUser.phone}/dailyEarned`] = 0.00;
-                updates[`/users/${currentUser.phone}/lastEarnedDate`] = today;
+                updates[`users/${currentUser.phone}/completedTasksToday`] = "";
+                updates[`users/${currentUser.phone}/dailyEarned`] = 0.00;
+                updates[`users/${currentUser.phone}/lastEarnedDate`] = today;
                 update(ref(db), updates).then(() => {
                     currentUser.completedTasksToday = [];
                     currentUser.dailyEarned = 0.00;
@@ -698,15 +698,15 @@
                         get(ref(db, `users/${refCode}`)).then((refSnap) => {
                             if (refSnap.exists()) {
                                 const refUser = refSnap.val();
-                                updates[`/users/${refCode}/balance`] = parseFloat(refUser.balance || 0) + REF_REWARD;
-                                updates[`/users/${refCode}/referrals`] = parseInt(refUser.referrals || 0) + 1;
+                                updates[`users/${refCode}/balance`] = parseFloat(refUser.balance || 0) + REF_REWARD;
+                                updates[`users/${refCode}/referrals`] = parseInt(refUser.referrals || 0) + 1;
                                 newUser.balance += 10.00; // রেফার লিংকে অ্যাকাউন্ট খোলার জন্য বোনাস
                                 showToast("রেফার সফল! +10 টাকা বোনাস", "success");
                             } else {
                                 // Referrer code database-এ না থাকলে empty করে দেওয়া হবে
                                 newUser.referredBy = null;
                             }
-                            updates[`/users/${userId}`] = newUser;
+                            updates[`users/${userId}`] = newUser;
                             update(ref(db), updates).then(() => {
                                 currentUser = newUser;
                                 enterApp();
@@ -714,7 +714,7 @@
                             });
                         }).catch(() => {
                             // Database fetching error-এর ক্ষেত্রে সরাসরি নতুন ইউজার রেজিস্টার হবে
-                            updates[`/users/${userId}`] = newUser;
+                            updates[`users/${userId}`] = newUser;
                             update(ref(db), updates).then(() => {
                                 currentUser = newUser;
                                 enterApp();
@@ -722,7 +722,7 @@
                             });
                         });
                     } else {
-                        updates[`/users/${userId}`] = newUser;
+                        updates[`users/${userId}`] = newUser;
                         update(ref(db), updates).then(() => {
                             currentUser = newUser;
                             enterApp();
@@ -748,7 +748,11 @@
                     currentUser = latestUser;
                     updateUIStates();
                 } else {
-                    handleLogout();
+                    // নিরাপত্তা চেক: ইউজার প্যানেল ওপেন থাকা অবস্থায় যদি এডমিন ডিলিট করে, শুধুমাত্র তখনই অ্যাপ বন্ধ হবে।
+                    // নতুন রেজিস্ট্রেশন বা প্রথমবার ঢোকার সময় যাতে কোনো রেস কন্ডিশনের কারণে অ্যাপ বন্ধ না হয় তা নিশ্চিত করা হলো।
+                    if (currentUser && currentUser.phone === userId) {
+                        handleLogout();
+                    }
                 }
             });
         }
@@ -928,7 +932,7 @@
                     wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">${t.title || ""}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
                 } else {
                     const isReferTask = t.id === 'task_t3' || t.id === 'task_t4' || t.type === 'refer' || t.type === 'refer5' || t.title?.includes('রেফার');
-                    wrapper.className = "bg-white border border-slate-100 rounded-2xl p-4 flex items-center justify-between shadow-sm";
+                    wrapper.className = "bg-white border border-slate-150 rounded-2xl p-4 flex items-center justify-between shadow-sm";
                     wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#${i+1}</span><i class="${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">${t.title || ""}</h4><p class="text-xs text-slate-400">সময়: ${t.time || 20}s • রিওয়ার্ড: ৳${taskReward}</p></div></div><button onclick="startTask('${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold">+৳${taskReward}</button>`;
                 }
                 container.appendChild(wrapper);
