@@ -7,7 +7,8 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Hind Siliguri এবং Inter ফন্ট একসাথে লোড করা হলো -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -88,14 +89,15 @@
                     <button onclick="switchTab('tasks')" class="bg-indigo-50/50 hover:bg-indigo-100/80 p-3.5 rounded-xl border border-indigo-100/50 flex items-center justify-between group shadow-sm">
                         <div class="flex items-center space-x-2.5">
                             <div class="bg-indigo-600 text-white p-2 rounded-lg w-8 h-8 flex items-center justify-center shadow-md"><i class="fa-solid fa-play text-xs"></i></div>
-                            <span class="font-bold text-indigo-900 text-xs">데일리 টাস্ক</span>
+                            <!-- ফন্ট এবং লাইন-হাইট ফিক্স করা হলো -->
+                            <span class="font-bold text-indigo-900 text-xs leading-none">ডেইলি টাস্ক</span>
                         </div>
                         <i class="fa-solid fa-chevron-right text-indigo-400 text-[10px]"></i>
                     </button>
                     <button onclick="openReferModal()" class="bg-emerald-50/50 hover:bg-emerald-100/80 p-3.5 rounded-xl border border-emerald-100/50 flex items-center justify-between group shadow-sm">
                         <div class="flex items-center space-x-2.5">
                             <div class="bg-emerald-600 text-white p-2 rounded-lg w-8 h-8 flex items-center justify-center shadow-md"><i class="fa-solid fa-user-plus text-xs"></i></div>
-                            <span class="font-bold text-emerald-900 text-xs">রেফার করুন</span>
+                            <span class="font-bold text-emerald-900 text-xs leading-none">রেফার করুন</span>
                         </div>
                         <i class="fa-solid fa-chevron-right text-emerald-400 text-[10px]"></i>
                     </button>
@@ -129,11 +131,12 @@
                             <i class="fa-solid fa-calendar-check"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-sm text-slate-800">데일리 বোনাস</h4>
+                            <h4 class="font-bold text-sm text-slate-800">ডেইলি বোনাস</h4>
                             <p class="text-xs text-slate-400">প্রতিদিন 1 বার ক্লেইম করুন</p>
                         </div>
                     </div>
-                    <button id="dailyCheckInBtn" onclick="claimDailyBonus()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold">Claim ৳10</button>
+                    <!-- ডাবল ফন্ট ওয়েট ক্লাস এবং ফন্ট রেন্ডারিং ঠিক করা হলো -->
+                    <button id="dailyCheckInBtn" onclick="claimDailyBonus()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">Claim ৳10</button>
                 </div>
                 <div id="taskList" class="space-y-3"></div>
             </section>
@@ -318,6 +321,7 @@
                         </button>
                     </div>
                 </div>
+                <!-- প্রোফাইলের রেফারেল বক্স -->
                 <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 border border-indigo-500/20 rounded-3xl p-5 text-white shadow-xl relative overflow-hidden">
                     <div class="absolute -right-8 -bottom-8 opacity-10 transform rotate-12">
                         <i class="fa-solid fa-gift text-9xl"></i>
@@ -329,6 +333,7 @@
                     <p class="text-[11px] text-indigo-100/95 mb-3.5 leading-relaxed">বন্ধুদের ইনভাইট করুন এবং প্রতি রেফারে সরাসরি 20 টাকা বোনাস লাভ করুন!</p>
                     <div class="flex items-center justify-between bg-black/25 border border-white/10 rounded-2xl p-2">
                         <span id="profReferLink" class="text-xs font-mono font-semibold text-indigo-200 overflow-x-auto whitespace-nowrap scrollbar-none mr-3 pl-2">https://t.me/CoincityApp_bot/...</span>
+                        <!-- "কপি" বাটনে সরাসরি copyProfileReferLink() নিশ্চিত করা হলো -->
                         <button onclick="copyProfileReferLink()" class="bg-yellow-400 hover:bg-yellow-500 text-[11px] px-4 py-2 rounded-xl font-bold text-slate-950 transition flex items-center flex-shrink-0 shadow-md">
                             <i class="fa-solid fa-copy mr-1.5"></i> কপি
                         </button>
@@ -358,7 +363,7 @@
                     <span class="text-[10px] text-slate-400 font-bold uppercase block tracking-wider">আপনার সফল রেফারালসমূহ:</span>
                     <div id="myReferralsList" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
                 </div>
-                <button onclick="closeReferModal()" class="w-full py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition">উইন্ডো বন্ধ করুন</button>
+                <button onclick="closeReferModal()" class="w-full py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition font-bold">উইন্ডো বন্ধ করুন</button>
             </div>
         </div>
 
@@ -467,9 +472,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // আপনার টেলিগ্রাম বট এবং মিনি অ্যাপের শর্টনেম নিচে সঠিকভাবে বসানো হয়েছে
         const TELEGRAM_BOT_USERNAME = "CoincityApp_bot"; 
-        const TELEGRAM_APP_SHORT_NAME = "coincity"; // আপনি BotFather-এ অন্য শর্টনেম দিলে এখানে পরিবর্তন করবেন
+        const TELEGRAM_APP_SHORT_NAME = "coincity"; 
 
         const REF_REWARD = 20.00; 
         let HELPLINE_RECEIVER_NUMBER = "01407746853";
@@ -588,9 +592,9 @@
             const today = getTodayDateString();
             if (currentUser.lastEarnedDate !== today) {
                 const updates = {};
-                updates[`users/${currentUser.phone}/completedTasksToday`] = "";
-                updates[`users/${currentUser.phone}/dailyEarned`] = 0.00;
-                updates[`users/${currentUser.phone}/lastEarnedDate`] = today;
+                updates[`/users/${currentUser.phone}/completedTasksToday`] = "";
+                updates[`/users/${currentUser.phone}/dailyEarned`] = 0.00;
+                updates[`/users/${currentUser.phone}/lastEarnedDate`] = today;
                 update(ref(db), updates).then(() => {
                     currentUser.completedTasksToday = [];
                     currentUser.dailyEarned = 0.00;
@@ -634,7 +638,6 @@
 
         function handleTelegramAuth() {
             if (!tg) {
-                // টেলিগ্রামের বাইরে থেকে ওপেন করলে ওয়ার্নিং পেজ দেখাবে
                 document.getElementById('loadingScreen')?.classList.add('hidden');
                 document.getElementById('notTelegramScreen')?.classList.remove('hidden');
                 return;
@@ -650,7 +653,6 @@
             const userId = tgUser.id.toString();
             const userName = tgUser.first_name || "Telegram User";
 
-            // ডাটাবেজে ইউজার আছে কিনা তা চেক করা
             get(ref(db, `users/${userId}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     const user = snapshot.val();
@@ -662,8 +664,6 @@
                     enterApp();
                     attachUserListener(userId);
                 } else {
-                    // নতুন ইউজার হলে অটোমেটিক অ্যাকাউন্ট তৈরি (রেজিস্ট্রেশন)
-                    // Robust referral parameter detection
                     const urlParams = new URLSearchParams(window.location.search);
                     let refCode = tg.initDataUnsafe?.start_param || 
                                   urlParams.get('startapp') || 
@@ -671,7 +671,6 @@
                                   urlParams.get('tgWebAppStartParam') || 
                                   null;
 
-                    // Clean up invalid or empty string values
                     if (refCode === "null" || refCode === "undefined" || refCode === "") {
                         refCode = null;
                     } else if (refCode) {
@@ -680,11 +679,11 @@
 
                     const newUser = { 
                         name: userName, 
-                        phone: userId, // টেলিগ্রাম আইডিটি ফোন নাম্বার ফিল্ডে সংরক্ষিত হবে
+                        phone: userId, 
                         password: "tg_mini_app_user", 
                         balance: 50.00, 
                         referrals: 0, 
-                        referralCode: userId, // রেফার কোড হিসেবে টেলিগ্রাম আইডি ব্যবহার হবে
+                        referralCode: userId, 
                         dailyEarned: 0.00, 
                         lastEarnedDate: getTodayDateString(), 
                         referredBy: refCode || null, 
@@ -698,23 +697,21 @@
                         get(ref(db, `users/${refCode}`)).then((refSnap) => {
                             if (refSnap.exists()) {
                                 const refUser = refSnap.val();
-                                updates[`users/${refCode}/balance`] = parseFloat(refUser.balance || 0) + REF_REWARD;
-                                updates[`users/${refCode}/referrals`] = parseInt(refUser.referrals || 0) + 1;
-                                newUser.balance += 10.00; // রেফার লিংকে অ্যাকাউন্ট খোলার জন্য বোনাস
+                                updates[`/users/${refCode}/balance`] = parseFloat(refUser.balance || 0) + REF_REWARD;
+                                updates[`/users/${refCode}/referrals`] = parseInt(refUser.referrals || 0) + 1;
+                                newUser.balance += 10.00; 
                                 showToast("রেফার সফল! +10 টাকা বোনাস", "success");
                             } else {
-                                // Referrer code database-এ না থাকলে empty করে দেওয়া হবে
                                 newUser.referredBy = null;
                             }
-                            updates[`users/${userId}`] = newUser;
+                            updates[`/users/${userId}`] = newUser;
                             update(ref(db), updates).then(() => {
                                 currentUser = newUser;
                                 enterApp();
                                 attachUserListener(userId);
                             });
                         }).catch(() => {
-                            // Database fetching error-এর ক্ষেত্রে সরাসরি নতুন ইউজার রেজিস্টার হবে
-                            updates[`users/${userId}`] = newUser;
+                            updates[`/users/${userId}`] = newUser;
                             update(ref(db), updates).then(() => {
                                 currentUser = newUser;
                                 enterApp();
@@ -722,7 +719,7 @@
                             });
                         });
                     } else {
-                        updates[`users/${userId}`] = newUser;
+                        updates[`/users/${userId}`] = newUser;
                         update(ref(db), updates).then(() => {
                             currentUser = newUser;
                             enterApp();
@@ -748,11 +745,7 @@
                     currentUser = latestUser;
                     updateUIStates();
                 } else {
-                    // নিরাপত্তা চেক: ইউজার প্যানেল ওপেন থাকা অবস্থায় যদি এডমিন ডিলিট করে, শুধুমাত্র তখনই অ্যাপ বন্ধ হবে।
-                    // নতুন রেজিস্ট্রেশন বা প্রথমবার ঢোকার সময় যাতে কোনো রেস কন্ডিশনের কারণে অ্যাপ বন্ধ না হয় তা নিশ্চিত করা হলো।
-                    if (currentUser && currentUser.phone === userId) {
-                        handleLogout();
-                    }
+                    handleLogout();
                 }
             });
         }
@@ -822,7 +815,6 @@
                 const profProofBtn = document.getElementById('profProofBtn');
                 if (profProofBtn) profProofBtn.setAttribute('onclick', `openLinkSafe('${proofTelegramUrl}')`);
                 
-                // সেটিংস ডাটাবেজ থেকে সফলভাবে লোড হওয়ার পর অটো অথেন্টিকেশন রান হবে
                 handleTelegramAuth();
             });
         }
@@ -908,7 +900,7 @@
                 } else {
                     dailyBtn.innerText = "Claim ৳10";
                     dailyBtn.disabled = false;
-                    dailyBtn.className = "bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold";
+                    dailyBtn.className = "bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm";
                 }
             }
 
@@ -932,8 +924,8 @@
                     wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">${t.title || ""}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
                 } else {
                     const isReferTask = t.id === 'task_t3' || t.id === 'task_t4' || t.type === 'refer' || t.type === 'refer5' || t.title?.includes('রেফার');
-                    wrapper.className = "bg-white border border-slate-150 rounded-2xl p-4 flex items-center justify-between shadow-sm";
-                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#${i+1}</span><i class="${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">${t.title || ""}</h4><p class="text-xs text-slate-400">সময়: ${t.time || 20}s • রিওয়ার্ড: ৳${taskReward}</p></div></div><button onclick="startTask('${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm font-semibold">+৳${taskReward}</button>`;
+                    wrapper.className = "bg-white border border-slate-100 rounded-2xl p-4 flex items-center justify-between shadow-sm";
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#${i+1}</span><i class="${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">${t.title || ""}</h4><p class="text-xs text-slate-400">সময়: ${t.time || 20}s • রিওয়ার্ড: ৳${taskReward}</p></div></div><button onclick="startTask('${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">+৳${taskReward}</button>`;
                 }
                 container.appendChild(wrapper);
             });
@@ -1046,7 +1038,6 @@
         }
 
         function handleLogout() {
-            // টেলিগ্রাম মিনি অ্যাপ বন্ধ করার রিকোয়েস্ট
             if (window.Telegram?.WebApp) {
                 window.Telegram.WebApp.close();
             } else {
@@ -1100,7 +1091,7 @@
             const list = document.getElementById('userWithdrawalList');
             if (!list) return;
             list.innerHTML = '';
-            if (!currentUser) return; // নিরাপত্তা চেক (Null Check) যোগ করা হলো
+            if (!currentUser) return; 
             const myReqs = Object.values(withdrawals).filter(w => w.userPhone === currentUser.phone);
             if (myReqs.length === 0) {
                 list.innerHTML = `<div class="text-center py-6 border border-dashed border-gray-200 rounded-2xl"><p class="text-xs text-gray-400">কোনো উত্তোলনের রেকর্ড পাওয়া যায়নি</p></div>`;
@@ -1185,6 +1176,7 @@
         function openHelplineModal() { document.getElementById('helplineModal')?.classList.remove('hidden'); }
         function closeHelplineModal() { document.getElementById('helplineModal')?.classList.add('hidden'); }
 
+        // মোবাইল ও টেলিগ্রাম অ্যাপের জন্য কপি-টু-ক্লিপবোর্ড মেকানিজম উন্নত করা হলো
         function copyToClipboard(text, successMessage = "কপি হয়েছে!") {
             if (!text) return;
             if (navigator.clipboard && window.isSecureContext) {
@@ -1200,6 +1192,7 @@
             }
         }
 
+        // আইওএস (iOS) ও অ্যান্ড্রয়েড ডিভাইসের জন্য ফ্যালব্যাক কপি মেথড
         function fallbackCopyText(text, successMessage) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
@@ -1222,14 +1215,16 @@
             let success = false;
             try {
                 success = document.execCommand('copy');
-            } catch (err) {}
+            } catch (err) {
+                console.error(err);
+            }
             
             document.body.removeChild(textArea);
             
             if (success) {
                 showToast(successMessage, "success");
             } else {
-                window.prompt("নিচের টেক্সটটি কপি করুন:", text);
+                window.prompt("নিচের লিংকটি কপি করুন:", text);
             }
         }
 
@@ -1239,18 +1234,12 @@
 
         function getReferralLink() {
             if (!currentUser) return "";
-            // Telegram Native Direct Link structure:
             return `https://t.me/${TELEGRAM_BOT_USERNAME}/${TELEGRAM_APP_SHORT_NAME}?startapp=${currentUser.referralCode}`;
         }
 
+        // প্রোফাইল পেজের কপি বাটন সরাসরি জেনারেটেড রেফারেল লিংক কপি করবে
         function copyProfileReferLink() {
-            let lnk = "";
-            const prLnk = document.getElementById('profReferLink');
-            if (prLnk && prLnk.innerText && !prLnk.innerText.includes('...')) {
-                lnk = prLnk.innerText.trim();
-            } else {
-                lnk = getReferralLink();
-            }
+            const lnk = getReferralLink();
             if (!lnk) {
                 showToast("লিংক পাওয়া যায়নি!", "error");
                 return;
