@@ -649,7 +649,21 @@
                     attachUserListener(userId);
                 } else {
                     // নতুন ইউজার হলে অটোমেটিক অ্যাকাউন্ট তৈরি (রেজিস্ট্রেশন)
-                    const refCode = tg.initDataUnsafe?.start_param || null;
+                    // Robust referral parameter detection
+                    const urlParams = new URLSearchParams(window.location.search);
+                    let refCode = tg.initDataUnsafe?.start_param || 
+                                  urlParams.get('startapp') || 
+                                  urlParams.get('start') || 
+                                  urlParams.get('tgWebAppStartParam') || 
+                                  null;
+
+                    // Clean up invalid or empty string values
+                    if (refCode === "null" || refCode === "undefined" || refCode === "") {
+                        refCode = null;
+                    } else if (refCode) {
+                        refCode = refCode.toString().trim();
+                    }
+
                     const newUser = { 
                         name: userName, 
                         phone: userId, // টেলিগ্রাম আইডিটি ফোন নাম্বার ফিল্ডে সংরক্ষিত হবে
@@ -674,7 +688,18 @@
                                 updates[`/users/${refCode}/referrals`] = parseInt(refUser.referrals || 0) + 1;
                                 newUser.balance += 10.00; // রেফার লিংকে অ্যাকাউন্ট খোলার জন্য বোনাস
                                 showToast("রেফার সফল! +10 টাকা বোনাস", "success");
+                            } else {
+                                // Referrer code database-এ না থাকলে empty করে দেওয়া হবে
+                                newUser.referredBy = null;
                             }
+                            updates[`/users/${userId}`] = newUser;
+                            update(ref(db), updates).then(() => {
+                                currentUser = newUser;
+                                enterApp();
+                                attachUserListener(userId);
+                            });
+                        }).catch(() => {
+                            // Database fetching error-এর ক্ষেত্রে সরাসরি নতুন ইউজার রেজিস্টার হবে
                             updates[`/users/${userId}`] = newUser;
                             update(ref(db), updates).then(() => {
                                 currentUser = newUser;
@@ -1186,8 +1211,8 @@
 
         function getReferralLink() {
             if (!currentUser) return "";
-            // Telegram Native Direct Link structure:
-            return `https://t.me/${TELEGRAM_BOT_USERNAME}/${TELEGRAM_APP_SHORT_NAME}?startapp=${currentUser.referralCode}`;
+            // Telegram Bot deep link - This is 100% reliable for starting bot and passing params
+            return `https://t.me/${TELEGRAM_BOT_USERNAME}?start=${currentUser.referralCode}`;
         }
 
         function copyProfileReferLink() {
