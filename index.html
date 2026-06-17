@@ -89,8 +89,7 @@
                     <button onclick="switchTab('tasks')" class="bg-indigo-50/50 hover:bg-indigo-100/80 p-3.5 rounded-xl border border-indigo-100/50 flex items-center justify-between group shadow-sm">
                         <div class="flex items-center space-x-2.5">
                             <div class="bg-indigo-600 text-white p-2 rounded-lg w-8 h-8 flex items-center justify-center shadow-md"><i class="fa-solid fa-play text-xs"></i></div>
-                            <!-- ফন্ট এবং লাইন-হাইট ফিক্স করা হলো -->
-                            <span class="font-bold text-indigo-900 text-xs leading-none">ডেইলি টাস্ক</span>
+                            <span class="font-bold text-indigo-900 text-xs leading-none">데일리 টাস্ক</span>
                         </div>
                         <i class="fa-solid fa-chevron-right text-indigo-400 text-[10px]"></i>
                     </button>
@@ -131,11 +130,10 @@
                             <i class="fa-solid fa-calendar-check"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-sm text-slate-800">ডেইলি বোনাস</h4>
+                            <h4 class="font-bold text-sm text-slate-800">데일리 বোনাস</h4>
                             <p class="text-xs text-slate-400">প্রতিদিন 1 বার ক্লেইম করুন</p>
                         </div>
                     </div>
-                    <!-- ডাবল ফন্ট ওয়েট ক্লাস এবং ফন্ট রেন্ডারিং ঠিক করা হলো -->
                     <button id="dailyCheckInBtn" onclick="claimDailyBonus()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">Claim ৳10</button>
                 </div>
                 <div id="taskList" class="space-y-3"></div>
@@ -333,7 +331,6 @@
                     <p class="text-[11px] text-indigo-100/95 mb-3.5 leading-relaxed">বন্ধুদের ইনভাইট করুন এবং প্রতি রেফারে সরাসরি 100 টাকা বোনাস লাভ করুন!</p>
                     <div class="flex items-center justify-between bg-black/25 border border-white/10 rounded-2xl p-2">
                         <span id="profReferLink" class="text-xs font-mono font-semibold text-indigo-200 overflow-x-auto whitespace-nowrap scrollbar-none mr-3 pl-2">https://t.me/CoincityApp_bot/...</span>
-                        <!-- "কপি" বাটনে সরাসরি copyProfileReferLink() নিশ্চিত করা হলো -->
                         <button onclick="copyProfileReferLink()" class="bg-yellow-400 hover:bg-yellow-500 text-[11px] px-4 py-2 rounded-xl font-bold text-slate-950 transition flex items-center flex-shrink-0 shadow-md">
                             <i class="fa-solid fa-copy mr-1.5"></i> কপি
                         </button>
@@ -475,7 +472,7 @@
         const TELEGRAM_BOT_USERNAME = "CoincityApp_bot"; 
         const TELEGRAM_APP_SHORT_NAME = "coincity"; 
 
-        const REF_REWARD = 100.00; // রেফার বোনাস ১০০ টাকা নির্ধারণ করা হলো
+        const REF_REWARD = 100.00; 
         let HELPLINE_RECEIVER_NUMBER = "01407746853";
 
         let users = {}, currentUser = null, withdrawals = {}, activations = {}, tasks = [], currentDepositMethodSelected = 'bKash', minWithdrawAmount = 800;
@@ -536,7 +533,6 @@
             } catch (e) { window.location.href = targetUrl; }
         }
 
-        // YouTube বা অন্যান্য এম্বেড লিংক জেনারেশন
         function getEmbedUrl(url) {
             if (!url) return '';
             let videoId = '';
@@ -630,7 +626,7 @@
             if (botBtn) botBtn.href = `https://t.me/${TELEGRAM_BOT_USERNAME}`;
         });
 
-        // Telegram Auto Authentication System
+        // Telegram SDK setup
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if (tg) {
             tg.ready();
@@ -727,6 +723,9 @@
                         });
                     }
                 }
+            }).catch((err) => {
+                console.error("User Auth Fetch Error:", err);
+                showToast("অথেন্টিকেশন কানেকশন ব্যর্থ: " + err.message, "error");
             });
         }
 
@@ -747,6 +746,9 @@
                 } else {
                     handleLogout();
                 }
+            }, (err) => {
+                console.error("User database synchronization failed:", err);
+                showToast("ইউজার সিঙ্ক এরর: " + err.message, "error");
             });
         }
 
@@ -760,21 +762,39 @@
         }
 
         function initializeDatabaseSync() {
+            // Error handling callbacks added to each onValue listener
             onValue(ref(db, 'notice'), (snap) => {
                 const newNotice = snap.val() || defaultNotice;
                 if (newNotice !== cachedNoticeText) {
                     cachedNoticeText = newNotice;
                     forceRefreshMarqueeText();
                 }
+            }, (err) => {
+                console.error("Notice stream failed:", err);
+                showToast("নোটিশ কানেকশন এরর: " + err.message, "error");
             });
+
             onValue(ref(db, 'tasks'), (snap) => {
                 const data = snap.val();
                 tasks = (data && (Array.isArray(data) ? data : Object.values(data)).filter(t => t?.id)) || defaultTasks;
                 renderTasksList();
+            }, (err) => {
+                console.error("Tasks stream failed:", err);
+                showToast("টাস্ক কানেকশন এরর: " + err.message, "error");
             });
             
-            onValue(ref(db, 'withdrawals'), (snap) => { withdrawals = snap.val() || {}; renderUserWithdrawalRequests(); });
-            onValue(ref(db, 'activations'), (snap) => { activations = snap.val() || {}; });
+            onValue(ref(db, 'withdrawals'), (snap) => { 
+                withdrawals = snap.val() || {}; 
+                renderUserWithdrawalRequests(); 
+            }, (err) => {
+                console.error("Withdrawals stream failed:", err);
+            });
+
+            onValue(ref(db, 'activations'), (snap) => { 
+                activations = snap.val() || {}; 
+            }, (err) => {
+                console.error("Activations stream failed:", err);
+            });
             
             onValue(ref(db, 'settings'), (snap) => {
                 const settings = snap.val() || {};
@@ -816,6 +836,13 @@
                 if (profProofBtn) profProofBtn.setAttribute('onclick', `openLinkSafe('${proofTelegramUrl}')`);
                 
                 handleTelegramAuth();
+            }, (err) => {
+                console.error("Settings stream failed:", err);
+                showToast("সার্ভার এরর (Settings Blocked): " + err.message, "error");
+                
+                // Fallback UI reset to avoid permanent blank loading screen
+                document.getElementById('loadingScreen')?.classList.add('hidden');
+                document.getElementById('notTelegramScreen')?.classList.remove('hidden');
             });
         }
 
@@ -1066,12 +1093,14 @@
                 document.getElementById('depAmount').value = "";
                 showToast("অ্যাক্টিভেশন রিকোয়েস্ট সাবমিট হয়েছে!", "success");
                 switchTab('wallet');
+            }).catch((err) => {
+                showToast("রিকোয়েস্ট ব্যর্থ: " + err.message, "error");
             });
         }
 
         function handleWithdrawal(e) {
             e.preventDefault();
-            if (!currentUser.isActivated) return showToast("উইথড্র করতে আগে একောင်ন্ট সচল করুন!", "error");
+            if (!currentUser.isActivated) return showToast("উইথড্র করতে আগে একাউন্ট সচল করুন!", "error");
             const ph = document.getElementById('withdrawPhone').value.trim(), pt = parseFloat(document.getElementById('withdrawPoints').value);
 
             if ((currentUser.balance || 0) < 800 || (currentUser.balance || 0) < pt) return showToast("পর্যাপ্ত ব্যালেন্স নাই", "error");
@@ -1084,6 +1113,8 @@
                 document.getElementById('withdrawPhone').value = "";
                 document.getElementById('withdrawPoints').value = "";
                 showToast("উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!", "success");
+            }).catch((err) => {
+                showToast("উইথড্র ব্যর্থ: " + err.message, "error");
             });
         }
 
@@ -1133,6 +1164,8 @@
                         container.appendChild(div);
                     });
                 }
+            }).catch((err) => {
+                container.innerHTML = `<p class="text-[10px] text-red-500 text-center py-4">লোড ব্যর্থ: ${err.message}</p>`;
             });
         }
 
@@ -1176,7 +1209,6 @@
         function openHelplineModal() { document.getElementById('helplineModal')?.classList.remove('hidden'); }
         function closeHelplineModal() { document.getElementById('helplineModal')?.classList.add('hidden'); }
 
-        // মোবাইল ও টেলিগ্রাম অ্যাপের জন্য অত্যন্ত শক্তিশালী কপি-টু-ক্লিপবোর্ড মেকানিজম
         function copyToClipboard(text, successMessage = "কপি হয়েছে!") {
             if (!text) return;
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1192,7 +1224,6 @@
             }
         }
 
-        // আইওএস (iOS) ও অ্যান্ড্রয়েড ডিভাইসের জন্য উন্নত ফ্যালব্যাক কপি মেথড
         function fallbackCopyText(text, successMessage) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
