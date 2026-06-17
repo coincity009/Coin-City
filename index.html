@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="bg-slate-50 border border-slate-150 rounded-lg p-2 overflow-hidden flex items-center space-x-2 shadow-inner w-full">
-                    <span class="bg-indigo-600 text-white text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider flex-shrink-0">নোচ্ছেদ</span>
+                    <span class="bg-indigo-600 text-white text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider flex-shrink-0">নোটিশ</span>
                     <div id="marqueeContainer" class="flex-grow overflow-hidden"></div>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden">
@@ -154,7 +154,7 @@
                         </h3>
                         <span class="text-[9px] bg-red-600 text-white font-black px-2 py-0.5 rounded-full uppercase">আবশ্যক</span>
                     </div>
-                    <p id="activationNoticeText" class="text-xs text-indigo-200 leading-relaxed mb-4">로드 হচ্ছে...</p>
+                    <p id="activationNoticeText" class="text-xs text-indigo-200 leading-relaxed mb-4">লোড হচ্ছে...</p>
                     <div class="bg-black/30 p-1 rounded-xl flex mb-4 border border-indigo-800">
                         <button type="button" onclick="switchDepMethod('bKash')" id="depTabBkash" class="w-1/2 py-2 text-[10px] font-bold rounded-lg text-white bg-indigo-600 shadow-sm flex items-center justify-center">bKash (বিকাশ)</button>
                         <button type="button" onclick="switchDepMethod('Nagad')" id="depTabNagad" class="w-1/2 py-2 text-[10px] font-bold text-indigo-300 rounded-lg flex items-center justify-center">Nagad (নগদ)</button>
@@ -200,7 +200,7 @@
                     <div class="space-y-3">
                         <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
                             <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
-                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">টাস্ক সঠিক নিয়মে সম্পন্ন করুন: স্পন্সর লিঙ্কের কাজ করার সময় নির্ধারিত 20 সেকেন্ড কাউন্টডাউন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</p>
+                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">টাস্ক সঠিক নিয়মে সম্পন্ন করুন: স্পন্সর লিঙ্কের কাজ করার সময় নির্ধারিত 20 সেকেন্ড কাউডাউন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</p>
                         </div>
                         <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
                             <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
@@ -618,17 +618,6 @@
             return isNaN(num) ? "0" : num.toFixed(decimals);
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            generateLiveScrollerData();
-            forceRefreshMarqueeText(); 
-            initializeDatabaseSync();
-            setInterval(() => { if (currentUser) checkDailyReset(); }, 10000);
-
-            const botBtn = document.getElementById('botLinkButton');
-            if (botBtn) botBtn.href = `https://t.me/${TELEGRAM_BOT_USERNAME}`;
-        });
-
-        // Telegram SDK setup
         const tg = window.Telegram ? window.Telegram.WebApp : null;
         if (tg) {
             tg.ready();
@@ -949,11 +938,11 @@
                 const taskReward = safeFormatNumber(t.reward);
                 if (isDone) {
                     wrapper.className = "bg-slate-100 border border-slate-200 rounded-2xl p-4 flex items-center justify-between opacity-60 pointer-events-none select-none";
-                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#\${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">\${t.title || ""}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">${t.title || ""}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
                 } else {
                     const isReferTask = t.id === 'task_t3' || t.id === 'task_t4' || t.type === 'refer' || t.type === 'refer5' || t.title?.includes('রেফার');
                     wrapper.className = "bg-white border border-slate-100 rounded-2xl p-4 flex items-center justify-between shadow-sm";
-                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#\${i+1}</span><i class="\${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">\${t.title || ""}</h4><p class="text-xs text-slate-400">সময়: \${t.time || 20}s • রিওয়ার্ড: ৳\${taskReward}</p></div></div><button onclick="startTask('\${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">+৳\${taskReward}</button>`;
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#${i+1}</span><i class="${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">${t.title || ""}</h4><p class="text-xs text-slate-400">সময়: ${t.time || 20}s • রিওয়ার্ড: ৳${taskReward}</p></div></div><button onclick="startTask('${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">+৳${taskReward}</button>`;
                 }
                 container.appendChild(wrapper);
             });
@@ -1166,7 +1155,7 @@
                     });
                 }
             }).catch((err) => {
-                container.innerHTML = `<p class="text-[10px] text-red-500 text-center py-4">লোড ব্যর্থ: ${err.message}</p>';
+                container.innerHTML = `<p class="text-[10px] text-red-500 text-center py-4">লোড ব্যর্থ: ${err.message}</p>`;
             });
         }
 
@@ -1309,6 +1298,23 @@
         }
         function getCurrentHumanFormattedDate() {
             return new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+        }
+
+        // নিরাপদ ইনিশিয়েলাইজার (যাতে DOMContentLoaded ফায়ার হয়ে গেলেও স্ক্রিপ্ট মিস না হয়)
+        function startAppInit() {
+            generateLiveScrollerData();
+            forceRefreshMarqueeText(); 
+            initializeDatabaseSync();
+            setInterval(() => { if (currentUser) checkDailyReset(); }, 10000);
+
+            const botBtn = document.getElementById('botLinkButton');
+            if (botBtn) botBtn.href = `https://t.me/${TELEGRAM_BOT_USERNAME}`;
+        }
+
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            startAppInit();
+        } else {
+            window.addEventListener('DOMContentLoaded', startAppInit);
         }
 
         window.switchTab = switchTab;
