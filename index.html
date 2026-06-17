@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="bg-slate-50 border border-slate-150 rounded-lg p-2 overflow-hidden flex items-center space-x-2 shadow-inner w-full">
-                    <span class="bg-indigo-600 text-white text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider flex-shrink-0">নোটিশ</span>
+                    <span class="bg-indigo-600 text-white text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider flex-shrink-0">নোচ্ছেদ</span>
                     <div id="marqueeContainer" class="flex-grow overflow-hidden"></div>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden">
@@ -89,7 +89,8 @@
                     <button onclick="switchTab('tasks')" class="bg-indigo-50/50 hover:bg-indigo-100/80 p-3.5 rounded-xl border border-indigo-100/50 flex items-center justify-between group shadow-sm">
                         <div class="flex items-center space-x-2.5">
                             <div class="bg-indigo-600 text-white p-2 rounded-lg w-8 h-8 flex items-center justify-center shadow-md"><i class="fa-solid fa-play text-xs"></i></div>
-                            <span class="font-semibold text-indigo-900 text-xs leading-normal py-0.5">ডেইলি টাস্ক</span>
+                            <!-- ফন্ট ফিক্স করার জন্য Hind Siliguri সরাসরি যুক্ত করা হয়েছে -->
+                            <span class="font-semibold text-indigo-900 text-xs leading-normal py-0.5" style="font-family: 'Hind Siliguri', sans-serif !important;">ডেইলি টাস্ক</span>
                         </div>
                         <i class="fa-solid fa-chevron-right text-indigo-400 text-[10px]"></i>
                     </button>
@@ -130,7 +131,8 @@
                             <i class="fa-solid fa-calendar-check"></i>
                         </div>
                         <div class="py-0.5">
-                            <h4 class="font-semibold text-sm text-slate-800 leading-relaxed py-0.5">ডেইলি বোনাস</h4>
+                            <!-- ফন্ট ফিক্স করার জন্য Hind Siliguri সরাসরি যুক্ত করা হয়েছে -->
+                            <h4 class="font-semibold text-sm text-slate-800 leading-relaxed py-0.5" style="font-family: 'Hind Siliguri', sans-serif !important;">ডেইলি বোনাস</h4>
                             <p class="text-xs text-slate-400 leading-normal">প্রতিদিন 1 বার ক্লেইম করুন</p>
                         </div>
                     </div>
@@ -402,7 +404,7 @@
         <div id="adModal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4 transition-all duration-300">
             <div class="bg-[#111827] text-white rounded-3xl w-full max-w-md p-5 flex flex-col justify-between relative border border-slate-800 shadow-2xl space-y-4">
                 <div class="flex justify-between items-center pb-2.5 border-b border-slate-800">
-                    <h4 class="font-extrabold text-base text-slate-100 tracking-wide" id="adModalTitle">ভিডিও প্রেজেন্টেশন</h4>
+                    <h4 class="font-extrabold text-base text-slate-100 tracking-wide" id="adModalTitle">ভিдео প্রেজেন্টেশন</h4>
                     <div class="flex items-center space-x-1.5 bg-slate-950 border border-indigo-500/30 px-3 py-1.5 rounded-xl shadow-inner">
                         <span id="adCountdown" class="text-xs font-mono font-black text-indigo-300">20s</span>
                         <i class="fa-solid fa-stopwatch text-indigo-400 text-xs"></i>
@@ -762,7 +764,6 @@
         }
 
         function initializeDatabaseSync() {
-            // Error handling callbacks added to each onValue listener
             onValue(ref(db, 'notice'), (snap) => {
                 const newNotice = snap.val() || defaultNotice;
                 if (newNotice !== cachedNoticeText) {
@@ -1165,7 +1166,7 @@
                     });
                 }
             }).catch((err) => {
-                container.innerHTML = `<p class="text-[10px] text-red-500 text-center py-4">লোড ব্যর্থ: ${err.message}</p>`;
+                container.innerHTML = `<p class="text-[10px] text-red-500 text-center py-4">লোড ব্যর্থ: ${err.message}</p>';
             });
         }
 
