@@ -173,7 +173,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-indigo-200 uppercase mb-1">কত টাকা পাঠিয়েছেন</label>
-                            <input type="number" id="depAmount" required min="110" class="w-full px-3 py-2 bg-white border border-indigo-700 rounded-lg text-xs font-bold focus:outline-none" placeholder="সর্বনিম্ন 110 টাকা">
+                            <input type="number" id="depAmount" required min="100" class="w-full px-3 py-2 bg-white border border-indigo-700 rounded-lg text-xs font-bold focus:outline-none" placeholder="সর্বনিম্ন 100 টাকা">
                         </div>
                         <button type="submit" id="depSubmitBtn" class="w-full py-2.5 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-slate-950 font-black rounded-xl transition duration-200 text-xs flex justify-center items-center shadow-lg"><i class="fa-solid fa-circle-check mr-1 text-sm"></i> অ্যাক্টিভেশন রিকোয়েস্ট সাবমিট করুন</button>
                     </form>
@@ -536,6 +536,7 @@
             } catch (e) { window.location.href = targetUrl; }
         }
 
+        // YouTube বা অন্যান্য এম্বেড লিংক জেনারেশন
         function getEmbedUrl(url) {
             if (!url) return '';
             let videoId = '';
@@ -699,7 +700,6 @@
                                 const refUser = refSnap.val();
                                 updates[`/users/${refCode}/balance`] = parseFloat(refUser.balance || 0) + REF_REWARD;
                                 updates[`/users/${refCode}/referrals`] = parseInt(refUser.referrals || 0) + 1;
-                                // জয়েন করা ব্যবহারকারী কোনো বোনাস পাবেন না
                                 showToast("রেফার সফলভাবে সম্পন্ন হয়েছে!", "success");
                             } else {
                                 newUser.referredBy = null;
@@ -790,7 +790,7 @@
                 const payNum = document.getElementById('activationNumberPlaceholder');
                 if (payNum) payNum.innerText = HELPLINE_RECEIVER_NUMBER;
 
-                const dbNotice = settings.activationNotice || "আপনার অ্যাকাউন্টটি সক্রিয় করতে এবং উইথড্র (Withdraw) করার সক্ষমতা সচল করতে হলে সার্ভিস চার্জ এবং একাউন্ট অ্যাক্টিভেশন বাবদ 110 টাকা পরিশোধ করতে হবে। অ্যাকাউন্টটি অ্যাক্টিভ হয়ে যাওয়ার সাথে সাথে আপনি আপনার সম্পূর্ণ ব্যালেন্স কোনো ঝামেলা ছাড়াই সরাসরি উইথড্র করে নিতে পারবেন। নিচে দেওয়া বিকাশ বা নগদ নাম্বারে সেন্ড মানি করুন।";
+                const dbNotice = settings.activationNotice || "আপনার অ্যাকাউন্টটি সক্রিয় করতে এবং উইথড্র (Withdraw) করার সক্ষমতা সচল করতে হলে সার্ভিস চার্জ এবং একাউন্ট অ্যাক্টিভেশন বাবদ 100 টাকা পরিশোধ করতে হবে। অ্যাকাউন্টটি অ্যাক্টিভ হয়ে যাওয়ার সাথে সাথে আপনি আপনার সম্পূর্ণ ব্যালেন্স কোনো ঝামেলা ছাড়াই সরাসরি উইথড্র করে নিতে পারবেন। নিচে দেওয়া বিকাশ বা নগদ নাম্বারে সেন্ড মানি করুন।";
                 const noticeEl = document.getElementById('activationNoticeText');
                 if (noticeEl) noticeEl.innerText = dbNotice;
 
@@ -1048,7 +1048,7 @@
         function handleActivationRequest(e) {
             e.preventDefault();
             const s = document.getElementById('depSender').value.trim(), a = parseFloat(document.getElementById('depAmount').value.trim());
-            if (!s || isNaN(a) || a < 110) return showToast("সর্বনিম্ন 110 টাকা ডিপোজিট লাগবে।", "error");
+            if (!s || isNaN(a) || a < 100) return showToast("সর্বনিম্ন 100 টাকা ডিপোজিট লাগবে।", "error");
 
             const duplicate = Object.values(activations).find(x => x.userPhone === currentUser.phone && x.status === 'Pending');
             if (duplicate) return showToast("আপনার পূর্ববর্তী রিকোয়েস্ট পেন্ডিং আছে।", "error");
@@ -1071,7 +1071,7 @@
 
         function handleWithdrawal(e) {
             e.preventDefault();
-            if (!currentUser.isActivated) return showToast("উইথড্র করতে আগে একাউন্ট সচল করুন!", "error");
+            if (!currentUser.isActivated) return showToast("উইথড্র করতে আগে একောင်ন্ট সচল করুন!", "error");
             const ph = document.getElementById('withdrawPhone').value.trim(), pt = parseFloat(document.getElementById('withdrawPoints').value);
 
             if ((currentUser.balance || 0) < 800 || (currentUser.balance || 0) < pt) return showToast("পর্যাপ্ত ব্যালেন্স নাই", "error");
@@ -1192,12 +1192,11 @@
             }
         }
 
-        // আইওএস (iOS) ও অ্যান্ড্রয়েড ডিভাইসের জন্য উন্নত ফ্যালব্যাক কপি মেথড (টেলিগ্রাম ফ্রেমের ভিতরে কাজ করার জন্য)
+        // আইওএস (iOS) ও অ্যান্ড্রয়েড ডিভাইসের জন্য উন্নত ফ্যালব্যাক কপি মেথড
         function fallbackCopyText(text, successMessage) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
             
-            // স্ক্রল এড়াতে এবং আইওএস এ সঠিক সিলেকশনের জন্য স্টাইল করা হলো
             textArea.style.position = "fixed"; 
             textArea.style.top = "0";
             textArea.style.left = "0";
@@ -1232,7 +1231,6 @@
             if (success) {
                 showToast(successMessage, "success");
             } else {
-                // শেষ উপায় হিসেবে ম্যানুয়াল প্রম্পট
                 window.prompt("নিচের লিংকটি কপি করুন:", text);
             }
         }
@@ -1246,11 +1244,9 @@
             return `https://t.me/${TELEGRAM_BOT_USERNAME}/${TELEGRAM_APP_SHORT_NAME}?startapp=${currentUser.referralCode}`;
         }
 
-        // প্রোফাইল পেজের কপি বাটন সরাসরি জেনারেটেড রেফারেল লিংক কপি করবে
         function copyProfileReferLink() {
             let lnk = getReferralLink();
             if (!lnk) {
-                // কোনো কারণে ডাটা লোড না হলে সরাসরি এলিমেন্ট থেকে লিংক রিড করার চেষ্টা করবে
                 const element = document.getElementById('profReferLink');
                 if (element && element.innerText && !element.innerText.includes('...')) {
                     lnk = element.innerText;
