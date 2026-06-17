@@ -89,7 +89,7 @@
                     <button onclick="switchTab('tasks')" class="bg-indigo-50/50 hover:bg-indigo-100/80 p-3.5 rounded-xl border border-indigo-100/50 flex items-center justify-between group shadow-sm">
                         <div class="flex items-center space-x-2.5">
                             <div class="bg-indigo-600 text-white p-2 rounded-lg w-8 h-8 flex items-center justify-center shadow-md"><i class="fa-solid fa-play text-xs"></i></div>
-                            <span class="font-bold text-indigo-900 text-xs leading-none">데일리 টাস্ক</span>
+                            <span class="font-semibold text-indigo-900 text-xs leading-normal py-0.5">ডেইলি টাস্ক</span>
                         </div>
                         <i class="fa-solid fa-chevron-right text-indigo-400 text-[10px]"></i>
                     </button>
@@ -117,7 +117,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <h3 class="text-lg font-bold text-slate-800">Earning Tasks</h3>
-                        <p class="text-xs text-gray-500">স্পন্সর লিঙ্ক ভিজিট করে সরাসরি টাকা আয় করুন</p>
+                        <p class="text-xs text-gray-500 leading-relaxed py-0.5">স্পন্সর লিঙ্ক ভিজিট করে সরাসরি টাকা আয় করুন</p>
                     </div>
                     <div class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold flex items-center space-x-1 select-none">
                         <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
@@ -129,9 +129,9 @@
                         <div class="bg-indigo-100 text-indigo-700 p-3 rounded-xl text-lg flex items-center justify-center">
                             <i class="fa-solid fa-calendar-check"></i>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-sm text-slate-800">데일리 বোনাস</h4>
-                            <p class="text-xs text-slate-400">প্রতিদিন 1 বার ক্লেইম করুন</p>
+                        <div class="py-0.5">
+                            <h4 class="font-semibold text-sm text-slate-800 leading-relaxed py-0.5">ডেইলি বোনাস</h4>
+                            <p class="text-xs text-slate-400 leading-normal">প্রতিদিন 1 বার ক্লেইম করুন</p>
                         </div>
                     </div>
                     <button id="dailyCheckInBtn" onclick="claimDailyBonus()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">Claim ৳10</button>
@@ -422,7 +422,7 @@
                         <i class="fa-solid fa-shield-halved text-emerald-500"></i>
                         <span>Secure Verification System</span>
                     </div>
-                    <button id="adCloseBtn" disabled onclick="closeAdModal()" class="w-full py-3.5 bg-slate-800 text-slate-500 border border-slate-700/50 font-extrabold rounded-xl text-sm transition-all duration-300 shadow-inner">দয়া করে সম্পূর্ণ ভিডিওটি শেষ করুন...</button>
+                    <button id="adCloseBtn" disabled onclick="closeAdModal()" class="w-full py-3.5 bg-slate-800 text-slate-500 border border-slate-750 font-extrabold rounded-xl text-sm transition-all duration-300 shadow-inner">দয়া করে সম্পূর্ণ ভিডিওটি শেষ করুন...</button>
                 </div>
             </div>
         </div>
@@ -948,11 +948,11 @@
                 const taskReward = safeFormatNumber(t.reward);
                 if (isDone) {
                     wrapper.className = "bg-slate-100 border border-slate-200 rounded-2xl p-4 flex items-center justify-between opacity-60 pointer-events-none select-none";
-                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">${t.title || ""}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-200 p-2.5 rounded-xl text-md flex items-center justify-center text-slate-400"><span class="text-[10px] font-black mr-2">#\${i+1}</span><i class="fa-solid fa-circle-check"></i></div><div><h4 class="font-bold text-sm text-slate-500">\${t.title || ""}</h4><p class="text-xs text-slate-400">Claimed</p></div></div><button disabled class="bg-slate-300 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl">Claimed</button>`;
                 } else {
                     const isReferTask = t.id === 'task_t3' || t.id === 'task_t4' || t.type === 'refer' || t.type === 'refer5' || t.title?.includes('রেফার');
                     wrapper.className = "bg-white border border-slate-100 rounded-2xl p-4 flex items-center justify-between shadow-sm";
-                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#${i+1}</span><i class="${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">${t.title || ""}</h4><p class="text-xs text-slate-400">সময়: ${t.time || 20}s • রিওয়ার্ড: ৳${taskReward}</p></div></div><button onclick="startTask('${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">+৳${taskReward}</button>`;
+                    wrapper.innerHTML = `<div class="flex items-center space-x-3"><div class="bg-slate-50 p-2.5 rounded-xl text-md flex items-center justify-center font-sans"><span class="text-[10px] font-black text-gray-400 mr-2">#\${i+1}</span><i class="\${isReferTask ? 'fa-solid fa-users text-emerald-500' : 'fa-solid fa-circle-play text-purple-500'}"></i></div><div><h4 class="font-bold text-sm text-slate-800">\${t.title || ""}</h4><p class="text-xs text-slate-400">সময়: \${t.time || 20}s • রিওয়ার্ড: ৳\${taskReward}</p></div></div><button onclick="startTask('\${t.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm">+৳\${taskReward}</button>`;
                 }
                 container.appendChild(wrapper);
             });
