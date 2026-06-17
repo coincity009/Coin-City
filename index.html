@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="bg-slate-50 border border-slate-150 rounded-lg p-2 overflow-hidden flex items-center space-x-2 shadow-inner w-full">
-                    <span class="bg-indigo-600 text-white text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider flex-shrink-0">নোটিশ</span>
+                    <span class="bg-indigo-600 text-white text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider flex-shrink-0">নোচ্ছেদ</span>
                     <div id="marqueeContainer" class="flex-grow overflow-hidden"></div>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden">
@@ -212,7 +212,7 @@
                         </div>
                         <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
                             <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
-                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">রেফার করে বাড়তি ইনকাম: বন্ধুদের সাথে রেফারেল লিংক শেয়ার করে প্রতি সফল রেফারে সরাসরি 20 টাকা বোনাস সংগ্রহ করুন।</p>
+                            <p class="text-xs text-indigo-100 leading-relaxed font-semibold">রেফার করে বাড়তি ইনকাম: বন্ধুদের সাথে রেফারেল লিংক শেয়ার করে প্রতি সফল রেফারে সরাসরি 50 টাকা বোনাস সংগ্রহ করুন।</p>
                         </div>
                         <div class="flex items-start space-x-3 bg-white/5 p-3 rounded-xl border border-white/5">
                             <span class="bg-indigo-600 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">5</span>
@@ -330,7 +330,7 @@
                         <i class="fa-solid fa-share-nodes text-sm animate-pulse"></i>
                         <span>আপনার ইউনিক রেফারেল লিংক</span>
                     </div>
-                    <p class="text-[11px] text-indigo-100/95 mb-3.5 leading-relaxed">বন্ধুদের ইনভাইট করুন এবং প্রতি রেফারে সরাসরি 20 টাকা বোনাস লাভ করুন!</p>
+                    <p class="text-[11px] text-indigo-100/95 mb-3.5 leading-relaxed">বন্ধুদের ইনভাইট করুন এবং প্রতি রেফারে সরাসরি 50 টাকা বোনাস লাভ করুন!</p>
                     <div class="flex items-center justify-between bg-black/25 border border-white/10 rounded-2xl p-2">
                         <span id="profReferLink" class="text-xs font-mono font-semibold text-indigo-200 overflow-x-auto whitespace-nowrap scrollbar-none mr-3 pl-2">https://t.me/CoincityApp_bot/...</span>
                         <!-- "কপি" বাটনে সরাসরি copyProfileReferLink() নিশ্চিত করা হলো -->
@@ -353,7 +353,7 @@
                 <div class="text-indigo-400 text-5xl"><i class="fa-solid fa-gift animate-pulse"></i></div>
                 <div>
                     <h4 class="font-bold text-lg text-white">Coin City Refer & Earn</h4>
-                    <p class="text-xs text-slate-300 px-4 mt-1">বন্ধুদের রেফার করে প্রতিটি সফল রেফারে 20 টাকা বোনাস জিতে নিন!</p>
+                    <p class="text-xs text-slate-300 px-4 mt-1">বন্ধুদের রেফার করে প্রতিটি সফল রেফারে 50 টাকা বোনাস জিতে নিন!</p>
                 </div>
                 <div class="bg-black/30 p-3 rounded-xl border border-indigo-950 flex justify-between items-center">
                     <span id="myReferralCodeText" class="text-sm font-mono font-bold text-white tracking-widest">REFXXXX</span>
@@ -475,7 +475,7 @@
         const TELEGRAM_BOT_USERNAME = "CoincityApp_bot"; 
         const TELEGRAM_APP_SHORT_NAME = "coincity"; 
 
-        const REF_REWARD = 20.00; 
+        const REF_REWARD = 50.00; // রেফার বোনাস ৫০ টাকা নির্ধারণ করা হলো
         let HELPLINE_RECEIVER_NUMBER = "01407746853";
 
         let users = {}, currentUser = null, withdrawals = {}, activations = {}, tasks = [], currentDepositMethodSelected = 'bKash', minWithdrawAmount = 800;
@@ -699,8 +699,8 @@
                                 const refUser = refSnap.val();
                                 updates[`/users/${refCode}/balance`] = parseFloat(refUser.balance || 0) + REF_REWARD;
                                 updates[`/users/${refCode}/referrals`] = parseInt(refUser.referrals || 0) + 1;
-                                newUser.balance += 10.00; 
-                                showToast("রেফার সফল! +10 টাকা বোনাস", "success");
+                                // যিনি লিঙ্কে ক্লিক করে জয়েন করেছেন তিনি কোনো বোনাস পাবেন না (newUser.balance += 10.00 বাদ দেওয়া হয়েছে)
+                                showToast("রেফার সফলভাবে সম্পন্ন হয়েছে!", "success");
                             } else {
                                 newUser.referredBy = null;
                             }
@@ -1025,6 +1025,7 @@
             if (vCon) { vCon.innerHTML = ''; vCon.classList.add('hidden'); }
         }
 
+        // ডেইলি বোনাস ক্লেইম ফাংশন
         function claimDailyBonus() {
             const today = getTodayDateString();
             checkDailyReset();
@@ -1110,6 +1111,7 @@
             });
         }
 
+        // রেফারেল পপ-আপ ওপেন এবং আমন্ত্রিত তালিকা প্রদর্শন ফাংশন
         function openReferModal() {
             const modal = document.getElementById('referModal');
             if (!modal) return;
@@ -1129,7 +1131,8 @@
                         const masked = u.phone.length > 5 ? u.phone.substring(0, 3) + "***" + u.phone.substring(u.phone.length - 2) : u.phone;
                         const div = document.createElement('div');
                         div.className = "flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-150 text-[10px] font-bold";
-                        div.innerHTML = `<span class="text-slate-700">${u.name || "User"} (${masked})</span><span class="${u.isActivated ? 'text-emerald-600' : 'text-red-500'} font-black uppercase text-[9px]">${u.isActivated ? 'অ্যাক্টিভ' : 'পেন্ডিং'}</span>`;
+                        // পেন্ডিং এবং অ্যাক্টিভ স্ট্যাটাস বাটনটি সম্পূর্ণভাবে বাদ দেওয়া হলো
+                        div.innerHTML = `<span class="text-slate-700">${u.name || "User"} (${masked})</span>`;
                         container.appendChild(div);
                     });
                 }
@@ -1176,7 +1179,7 @@
         function openHelplineModal() { document.getElementById('helplineModal')?.classList.remove('hidden'); }
         function closeHelplineModal() { document.getElementById('helplineModal')?.classList.add('hidden'); }
 
-        // মোবাইল ও টেলিগ্রাম অ্যাপের জন্য কপি-টু-ক্লিপবোর্ড মেকানিজম উন্নত করা হলো
+        // মোবাইল ও টেলিগ্রাম অ্যাপের জন্য কপি-টু-ক্লিপবোর্ড মেকানিজম
         function copyToClipboard(text, successMessage = "কপি হয়েছে!") {
             if (!text) return;
             if (navigator.clipboard && window.isSecureContext) {
@@ -1237,7 +1240,7 @@
             return `https://t.me/${TELEGRAM_BOT_USERNAME}/${TELEGRAM_APP_SHORT_NAME}?startapp=${currentUser.referralCode}`;
         }
 
-        // প্রোফাইল পেজের কপি বাটন সরাসরি জেনারেটেড রেফারেল লিংক কপি করবে
+        // প্রোফাইল পেজের কপি বাটন
         function copyProfileReferLink() {
             const lnk = getReferralLink();
             if (!lnk) {
