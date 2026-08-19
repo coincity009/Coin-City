@@ -17,18 +17,18 @@ export default async function handler(req, res) {
                 const parts = text.split(' ');
                 const refCode = parts.length > 1 ? parts[1].trim() : '';
 
-                // আপনার বটের আসল ইউজারনেম এবং মিনি অ্যাপের শর্ট নেম
+                // আপনার বটের আসল ইউজারনেম
                 const BOT_USERNAME = "CoincityApp_bot"; 
-                const APP_SHORT_NAME = "coincity"; 
 
-                // টেলিগ্রামের নেটিভ ডিরেক্ট লিংক তৈরি (যা সরাসরি মিনি অ্যাপ ওপেন করবে)
-                let webAppUrl;
+                // আপনার AI Studio লাইভ অ্যাপের ডিরেক্ট লিঙ্ক
+                const BASE_APP_URL = "https://ais-pre-j7cg27jsrp7uqa4qy3tqyo-248705558062.asia-southeast1.run.app";
+
+                // রেফারেল আইডি সহ ডিরেক্ট লিংক (টেলিগ্রামে ১০০% নিশ্চিত ওপেন হবে)
+                let directAppUrl = BASE_APP_URL;
                 if (refCode) {
-                    webAppUrl = `https://t.me/${BOT_USERNAME}/${APP_SHORT_NAME}?startapp=${refCode}`;
+                    directAppUrl = `${BASE_APP_URL}/?ref=${refCode}`;
                 } else if (userId) {
-                    webAppUrl = `https://t.me/${BOT_USERNAME}/${APP_SHORT_NAME}?startapp=${userId}`;
-                } else {
-                    webAppUrl = `https://t.me/${BOT_USERNAME}/${APP_SHORT_NAME}`;
+                    directAppUrl = `${BASE_APP_URL}/?ref=${userId}`;
                 }
 
                 // আপনার বটের আসল টোকেন
@@ -37,11 +37,14 @@ export default async function handler(req, res) {
                 // ওয়েলকাম মেসেজ
                 const messageText = `আয় শুরু করতে Open Coin City App বাটনে ক্লিক করুন ⬇️`;
 
-                // inline_keyboard: রেফারেল বোনাস ১০০ টাকা বাটনে আপডেট করা হয়েছে
+                // বাটনে ডিরেক্ট HTTPS লিঙ্ক দেওয়া হয়েছে যাতে কোনো 404 বা Not Found এরর না আসে
                 const replyMarkup = {
                     inline_keyboard: [
                         [
-                            { text: 'Open Coin City App', url: webAppUrl }
+                            { 
+                                text: '🚀 Open Coin City App', 
+                                url: directAppUrl 
+                            }
                         ],
                         [
                             { 
