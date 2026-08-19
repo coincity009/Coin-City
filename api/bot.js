@@ -23,27 +23,45 @@ export default async function handler(req, res) {
                 // আপনার AI Studio লাইভ অ্যাপের ডিরেক্ট লিঙ্ক
                 const BASE_APP_URL = "https://ais-pre-j7cg27jsrp7uqa4qy3tqyo-248705558062.asia-southeast1.run.app";
 
-                // রেফারেল আইডি সহ ডিরেক্ট লিংক (টেলিগ্রামে ১০০% নিশ্চিত ওপেন হবে)
-                let directAppUrl = BASE_APP_URL;
+                // রেফারেল আইডি সহ ডিরেক্ট WebApp URL
+                let webAppUrl = BASE_APP_URL;
                 if (refCode) {
-                    directAppUrl = `${BASE_APP_URL}/?ref=${refCode}`;
+                    webAppUrl = `${BASE_APP_URL}/?ref=${refCode}`;
                 } else if (userId) {
-                    directAppUrl = `${BASE_APP_URL}/?ref=${userId}`;
+                    webAppUrl = `${BASE_APP_URL}/?ref=${userId}`;
                 }
 
                 // আপনার বটের আসল টোকেন
                 const BOT_TOKEN = "8911018141:AAHf_Y6ADoJiK7EctZjEYZ_c1ZNmqqq9m6M"; 
 
-                // ওয়েলকাম মেসেজ
-                const messageText = `আয় শুরু করতে Open Coin City App বাটনে ক্লিক করুন ⬇️`;
+                // ১. টেলিগ্রামের বট মেনু বাটন (নিচের বামের [Open] বাটন) সরাসরি মিনি অ্যাপের সাথে যুক্ত করা
+                try {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setChatMenuButton`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            menu_button: {
+                                type: 'web_app',
+                                text: 'Open App',
+                                web_app: { url: webAppUrl }
+                            }
+                        })
+                    });
+                } catch (e) {
+                    console.warn("Menu button error:", e);
+                }
 
-                // বাটনে ডিরেক্ট HTTPS লিঙ্ক দেওয়া হয়েছে যাতে কোনো 404 বা Not Found এরর না আসে
+                // ওয়েলকাম মেসেজ
+                const messageText = `🎉 *Coin City মিনি অ্যাপে স্বাগতম!*\n\nটেলিগ্রামের ভেতরে কাজ শুরু করতে নিচের *Open Coin City App* বাটনে ক্লিক করুন ⬇️`;
+
+                // inline_keyboard: 'web_app' অবজেক্ট দেওয়ায় এটি টেলিগ্রামের ভেতরেই পপ-আপ ছাড়া অ্যাপ ওপেন করবে
                 const replyMarkup = {
                     inline_keyboard: [
                         [
                             { 
                                 text: '🚀 Open Coin City App', 
-                                url: directAppUrl 
+                                web_app: { url: webAppUrl } 
                             }
                         ],
                         [
@@ -63,6 +81,7 @@ export default async function handler(req, res) {
                     body: JSON.stringify({
                         chat_id: chatId,
                         text: messageText,
+                        parse_mode: 'Markdown',
                         reply_markup: replyMarkup
                     })
                 });
