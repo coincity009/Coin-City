@@ -20,15 +20,15 @@ export default async function handler(req, res) {
                 // আপনার বটের আসল ইউজারনেম
                 const BOT_USERNAME = "CoincityApp_bot"; 
 
-                // বর্তমান লাইভ অ্যাক্টিভ লিঙ্ক (ais-dev)
-                const BASE_APP_URL = "https://ais-dev-j7cg27jsrp7uqa4qy3tqyo-248705558062.asia-southeast1.run.app";
+                // আপনার AI Studio পাবলিক লাইভ অ্যাপ লিঙ্ক
+                const PUBLIC_APP_URL = "https://ais-pre-j7cg27jsrp7uqa4qy3tqyo-248705558062.asia-southeast1.run.app";
 
-                // রেফারেল প্যারামিটার সহ WebApp URL
-                let webAppUrl = BASE_APP_URL;
+                // রেফারেল আইডি সহ WebApp URL
+                let webAppUrl = PUBLIC_APP_URL;
                 if (refCode) {
-                    webAppUrl = `${BASE_APP_URL}/?ref=${refCode}`;
+                    webAppUrl = `${PUBLIC_APP_URL}/?ref=${refCode}`;
                 } else if (userId) {
-                    webAppUrl = `${BASE_APP_URL}/?ref=${userId}`;
+                    webAppUrl = `${PUBLIC_APP_URL}/?ref=${userId}`;
                 }
 
                 // আপনার বটের আসল টোকেন
@@ -53,9 +53,9 @@ export default async function handler(req, res) {
                 }
 
                 // ওয়েলকাম মেসেজ
-                const messageText = `🎉 *Coin City মিনি অ্যাপে স্বাগতম!*\n\nটেলিগ্রামের ভেতরে কাজ শুরু করতে নিচের *Open Coin City App* বাটনে ক্লিক করুন ⬇️`;
+                const messageText = `🎉 *Coin City মিনি অ্যাপে স্বাগতম!*\n\nটেলিগ্রামের ভেতরে সরাসরি কাজ করতে নিচের *Open Coin City App* বাটনে চাপুন ⬇️`;
 
-                // বাটনে সক্রিয় লাইভ WebApp লিংক
+                // বাটনে পাবলিক WebApp লিংক
                 const replyMarkup = {
                     inline_keyboard: [
                         [
