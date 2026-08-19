@@ -21,15 +21,14 @@ export default async function handler(req, res) {
                 const BOT_USERNAME = "CoincityApp_bot"; 
                 const APP_SHORT_NAME = "coincity"; 
 
-                // আপনার AI Studio লাইভ অ্যাপের URL
-                const LIVE_APP_BASE_URL = "https://ais-pre-j7cg27jsrp7uqa4qy3tqyo-248705558062.asia-southeast1.run.app";
-
-                // টেলিগ্রামের ভেতর সরাসরি ইন-অ্যাপ ওপেন হওয়ার ডিরেক্ট WebApp লিংক (রেফারেল সহ)
-                let directWebAppUrl = LIVE_APP_BASE_URL;
+                // টেলিগ্রামের নেটিভ ডিরেক্ট লিংক তৈরি (যা সরাসরি মিনি অ্যাপ ওপেন করবে)
+                let webAppUrl;
                 if (refCode) {
-                    directWebAppUrl = `${LIVE_APP_BASE_URL}/?ref=${refCode}`;
+                    webAppUrl = `https://t.me/${BOT_USERNAME}/${APP_SHORT_NAME}?startapp=${refCode}`;
                 } else if (userId) {
-                    directWebAppUrl = `${LIVE_APP_BASE_URL}/?ref=${userId}`;
+                    webAppUrl = `https://t.me/${BOT_USERNAME}/${APP_SHORT_NAME}?startapp=${userId}`;
+                } else {
+                    webAppUrl = `https://t.me/${BOT_USERNAME}/${APP_SHORT_NAME}`;
                 }
 
                 // আপনার বটের আসল টোকেন
@@ -38,19 +37,16 @@ export default async function handler(req, res) {
                 // ওয়েলকাম মেসেজ
                 const messageText = `আয় শুরু করতে Open Coin City App বাটনে ক্লিক করুন ⬇️`;
 
-                // inline_keyboard: web_app ব্যবহারের মাধ্যমে টেলিগ্রামের ভেতরেই তাৎক্ষণিক অ্যাপ ও রেফারেল চালু হবে
+                // inline_keyboard: রেফারেল বোনাস ১০০ টাকা বাটনে আপডেট করা হয়েছে
                 const replyMarkup = {
                     inline_keyboard: [
                         [
-                            { 
-                                text: 'Open Coin City App', 
-                                web_app: { url: directWebAppUrl } 
-                            }
+                            { text: 'Open Coin City App', url: webAppUrl }
                         ],
                         [
-                            {
-                                text: '👥 বন্ধুদের রেফার করুন (৳২০ বোনাস)',
-                                url: `https://t.me/share/url?url=https://t.me/${BOT_USERNAME}?start=${userId}&text=${encodeURIComponent('Coin City অ্যাপে কাজ করে প্রতিদিন টাকা আয় করুন!')}`
+                            { 
+                                text: '👥 বন্ধুদের রেফার করুন (৳১০০ বোনাস)', 
+                                url: `https://t.me/share/url?url=https://t.me/${BOT_USERNAME}?start=${userId}&text=${encodeURIComponent('Coin City অ্যাপে কাজ করে প্রতিদিন টাকা আয় করুন! প্রতি রেফারে ১০০ টাকা বোনাস!')}` 
                             }
                         ]
                     ]
