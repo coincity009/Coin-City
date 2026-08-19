@@ -20,10 +20,10 @@ export default async function handler(req, res) {
                 // আপনার বটের আসল ইউজারনেম
                 const BOT_USERNAME = "CoincityApp_bot"; 
 
-                // আপনার AI Studio লাইভ অ্যাপের ডিরেক্ট লিঙ্ক
-                const BASE_APP_URL = "https://ais-pre-j7cg27jsrp7uqa4qy3tqyo-248705558062.asia-southeast1.run.app";
+                // বর্তমান লাইভ অ্যাক্টিভ লিঙ্ক (ais-dev)
+                const BASE_APP_URL = "https://ais-dev-j7cg27jsrp7uqa4qy3tqyo-248705558062.asia-southeast1.run.app";
 
-                // রেফারেল আইডি সহ ডিরেক্ট WebApp URL
+                // রেফারেল প্যারামিটার সহ WebApp URL
                 let webAppUrl = BASE_APP_URL;
                 if (refCode) {
                     webAppUrl = `${BASE_APP_URL}/?ref=${refCode}`;
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
                 // আপনার বটের আসল টোকেন
                 const BOT_TOKEN = "8911018141:AAHf_Y6ADoJiK7EctZjEYZ_c1ZNmqqq9m6M"; 
 
-                // ১. টেলিগ্রামের বট মেনু বাটন (নিচের বামের [Open] বাটন) সরাসরি মিনি অ্যাপের সাথে যুক্ত করা
+                // টেলিগ্রামের বট মেনু বাটন লাইভ URL-এর সাথে সেট করা
                 try {
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/setChatMenuButton`, {
                         method: 'POST',
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
                 // ওয়েলকাম মেসেজ
                 const messageText = `🎉 *Coin City মিনি অ্যাপে স্বাগতম!*\n\nটেলিগ্রামের ভেতরে কাজ শুরু করতে নিচের *Open Coin City App* বাটনে ক্লিক করুন ⬇️`;
 
-                // inline_keyboard: 'web_app' অবজেক্ট দেওয়ায় এটি টেলিগ্রামের ভেতরেই পপ-আপ ছাড়া অ্যাপ ওপেন করবে
+                // বাটনে সক্রিয় লাইভ WebApp লিংক
                 const replyMarkup = {
                     inline_keyboard: [
                         [
